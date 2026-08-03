@@ -1,0 +1,13 @@
+package com.lightdiary;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+public class LightDiaryApplicationTests {
+
+    @Test
+    public void contextLoads() {
+    }
+
+}
