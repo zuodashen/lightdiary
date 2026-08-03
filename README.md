@@ -3,6 +3,7 @@
 ## 简介
 
 lightdiary 是一款基于 SpringBoot + MyBatis-Plus 的快速开发脚手架，拥有完整的权限管理功能，可对接 Vue 前端，开箱即用。
+接下来会在此基础上，做一个简约的个人博客项目。
 
 > 学习自 https://github.com/macrozheng/mall-tiny
 
