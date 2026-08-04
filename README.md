@@ -5,7 +5,8 @@
 | 模块 | 技术 | 说明 |
 | ---- | ---- | ---- |
 | 后端 | Spring Boot 2.7.5 + MyBatis-Plus | 博客 API + 权限管理 |
-| 前端 | Vue 3 + Vite + Tailwind | 暗色主题博客站点 |
+| 前台 | Vue 3 + Vite + Tailwind (`blog-web`) | 暗色主题博客站点 |
+| 后台 | Vue 3 + Vite + Tailwind (`blog-admin`) | 可视化内容管理 + 登录 |
 | 数据 | MySQL + Redis | 文章、书签、站点配置等 |
 
 > 后端脚手架学习自 [mall-tiny](https://github.com/macrozheng/mall-tiny)
@@ -48,6 +49,25 @@ npm run dev
 
 访问：http://localhost:5173
 
+### 5. 启动管理后台
+
+```bash
+cd blog-admin
+npm install
+npm run dev
+```
+
+访问：http://localhost:5174
+
+使用 `ums_admin` 表中的账号登录（常见为 `test/test` 或 `admin/macro123`）。管理后台覆盖全部 Admin API：
+
+| 模块 | 功能 |
+| ---- | ---- |
+| 内容 | 文章、分类、标签、书签、页面、评论审核与配置 |
+| 站点 | 站点设置、导航、社交链接 |
+| 系统 | 用户、角色（菜单/资源分配）、菜单、资源 |
+| 账户 | 修改密码、退出登录 |
+
 ## 项目结构
 
 ```
@@ -57,13 +77,18 @@ lightdiary/
 │   └── modules/
 │       ├── ums/            # 权限管理
 │       └── blog/           # 博客业务
-├── blog-web/               # Vue 3 前端
+├── blog-web/               # Vue 3 前台站点
+├── blog-admin/             # Vue 3 管理后台
 └── README.md
 ```
 
 ## 内容管理
 
 初始数据库仅包含站点配置、导航、分类框架，**文章和书签需自行添加**。
+
+**推荐方式：** 使用管理后台 http://localhost:5174 进行可视化操作。
+
+**备选方式（Swagger）：**
 
 1. 打开 http://127.0.0.1:8080/doc.html
 2. 调用 `POST /admin/login` 登录（默认账号见 `ums_admin` 表，常见为 `test/test` 或 `admin/macro123`）
