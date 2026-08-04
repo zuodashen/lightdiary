@@ -68,6 +68,19 @@ npm run dev
 | 系统 | 用户、角色（菜单/资源分配）、菜单、资源 |
 | 账户 | 修改密码、退出登录 |
 
+## 生产部署（阿里云）
+
+与 body-build-project 相同的一键部署方式，详见 **[deploy/DEPLOY.md](deploy/DEPLOY.md)**。
+
+```bash
+# 本地打包 → 上传到服务器 /opt/lightdiary/server/
+mvn clean package -DskipTests
+scp target/lightdiary-1.0.0-SNAPSHOT.jar root@服务器:/opt/lightdiary/server/lightdiary.jar
+
+# 服务器一键部署
+cd /opt/lightdiary/server && cp .env.example .env && ./install.sh
+```
+
 ## 项目结构
 
 ```

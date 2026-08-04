@@ -1,0 +1,14 @@
+services:
+  lightdiary:
+    build: .
+    container_name: lightdiary
+    restart: unless-stopped
+    network_mode: host
+    env_file:
+      - .env
+    environment:
+      # 仅放固定项；MySQL/Redis 地址只从 .env 读取，避免 shell 里 export 的 bridge IP 覆盖 127.0.0.1
+      SPRING_PROFILES_ACTIVE: prod
+      KNIFE4J_ENABLE: ${KNIFE4J_ENABLE:-false}
+    volumes:
+      - /mydata/lightdiary/logs:/var/logs

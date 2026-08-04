@@ -1,0 +1,33 @@
+# lightdiary 生产部署（复用已有 mysql / redis / nginx）
+# 用法:
+#   cd deploy
+#   cp .env.example .env   # 编辑填入真实密码与 DOCKER_NETWORK
+#   docker compose -f docker-compose.prod.yml up -d
+
+services:
+  lightdiary:
+    image: lightdiary:1.0.0
+    container_name: lightdiary
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_USERNAME: ${REDIS_USERNAME:-}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      REDIS_DATABASE: ${REDIS_DATABASE:-0}
+      JWT_SECRET: ${JWT_SECRET}
+      KNIFE4J_ENABLE: ${KNIFE4J_ENABLE:-false}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /mydata/lightdiary/logs:/var/logs
+    networks:
+      - lightdiary-net
+
+networks:
+  lightdiary-net:
+    external: true
+    name: ${DOCKER_NETWORK}

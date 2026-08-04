@@ -1,0 +1,11 @@
+# 备用：若你们私有仓库 zyzbp 下有 openjdk 8，可改用此文件
+# 构建: docker build -f deploy/Dockerfile.zyzbp -t lightdiary:1.0.0 .
+
+FROM registry.cn-hangzhou.aliyuncs.com/zyzbp/openjdk:8-jre
+
+WORKDIR /app
+COPY lightdiary-1.0.0-SNAPSHOT.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-Xms256m", "-Xmx512m", "-jar", "/app/app.jar"]

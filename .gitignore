@@ -28,5 +28,9 @@ HELP.md
 ### VS Code ###
 .vscode/
 
+### Deploy secrets ###
+deploy/.env
+deploy/server/.env
+
 ### Gradle ###
 .gradle
