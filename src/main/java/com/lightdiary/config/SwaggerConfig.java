@@ -28,8 +28,8 @@ public class SwaggerConfig extends BaseSwaggerConfig {
     public SwaggerProperties swaggerProperties() {
         return SwaggerProperties.builder()
                 .apiBasePackage("com.lightdiary.modules")
-                .title("lightdiary项目骨架")
-                .description("lightdiary项目骨架相关接口文档")
+                .title("lightdiary 微光博客")
+                .description("lightdiary 微光博客 API 接口文档")
                 .contactName("lightdiary")
                 .version("1.0")
                 .enableSecurity(true)

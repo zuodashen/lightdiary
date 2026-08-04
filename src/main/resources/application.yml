@@ -40,6 +40,8 @@ secure:
     urls: #安全路径白名单
       - /swagger-ui/
       - /swagger-resources/**
+      - /doc.html
+      - /webjars/**
       - /**/v2/api-docs
       - /**/*.html
       - /**/*.js
@@ -52,3 +54,15 @@ secure:
       - /admin/register
       - /admin/info
       - /admin/logout
+      - /api/**
+
+blog:
+  markdown:
+    cache-html: true
+  comment:
+    default-status: PENDING
+
+knife4j:
+  enable: true
+  setting:
+    language: zh-CN

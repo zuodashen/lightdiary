@@ -1,0 +1,1 @@
+import{D as n,E as e}from"./index-fOailAH_.js";function m(t){return n("/comment/list",t)}function r(t){return e(`/comment/approve/${t}`)}function c(t){return e(`/comment/reject/${t}`)}function u(t){return e(`/comment/delete/${t}`)}function f(){return n("/comment/config")}function a(t){return e("/comment/config/update",t)}export{r as a,f as b,u as d,m as f,c as r,a as u};

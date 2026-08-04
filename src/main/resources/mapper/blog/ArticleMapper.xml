@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lightdiary.modules.blog.mapper.ArticleMapper">
+
+    <resultMap id="ArticleListVOMap" type="com.lightdiary.modules.blog.vo.ArticleListVO">
+        <id column="id" property="id"/>
+        <result column="title" property="title"/>
+        <result column="slug" property="slug"/>
+        <result column="summary" property="summary"/>
+        <result column="cover_image" property="coverImage"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="category_name" property="categoryName"/>
+        <result column="views" property="views"/>
+        <result column="is_top" property="isTop"/>
+        <result column="publish_time" property="publishTime"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <sql id="PublishedArticleSelect">
+        SELECT a.id, a.title, a.slug, a.summary, a.cover_image, a.category_id,
+               c.name AS category_name, a.views, a.is_top, a.publish_time, a.create_time
+        FROM blog_article a
+        LEFT JOIN blog_category c ON a.category_id = c.id
+        WHERE a.status = 'PUBLISHED'
+    </sql>
+
+    <select id="listPublished" resultMap="ArticleListVOMap">
+        <include refid="PublishedArticleSelect"/>
+        <if test="categoryId != null">
+            AND a.category_id = #{categoryId}
+        </if>
+        <if test="tagId != null">
+            AND EXISTS (
+                SELECT 1 FROM blog_article_tag at
+                WHERE at.article_id = a.id AND at.tag_id = #{tagId}
+            )
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND (a.title LIKE CONCAT('%', #{keyword}, '%')
+                 OR a.summary LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        ORDER BY a.is_top DESC, a.publish_time DESC
+    </select>
+
+    <select id="listHot" resultMap="ArticleListVOMap">
+        <include refid="PublishedArticleSelect"/>
+        ORDER BY a.views DESC, a.publish_time DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="listAllPublished" resultMap="ArticleListVOMap">
+        <include refid="PublishedArticleSelect"/>
+        ORDER BY a.publish_time DESC
+    </select>
+</mapper>

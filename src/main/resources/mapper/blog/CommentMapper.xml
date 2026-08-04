@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lightdiary.modules.blog.mapper.CommentMapper">
+
+    <select id="listByArticleId" resultType="com.lightdiary.modules.blog.model.Comment">
+        SELECT id, article_id AS articleId, parent_id AS parentId,
+               author_name AS authorName, author_email AS authorEmail,
+               author_avatar AS authorAvatar, content, status,
+               ip_address AS ipAddress, user_agent AS userAgent, create_time AS createTime
+        FROM blog_comment
+        WHERE article_id = #{articleId} AND status = 'APPROVED'
+        ORDER BY create_time ASC
+    </select>
+</mapper>

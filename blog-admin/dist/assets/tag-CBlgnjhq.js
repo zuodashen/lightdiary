@@ -1,0 +1,1 @@
+import{D as a,E as e}from"./index-fOailAH_.js";function n(){return a("/tag/list")}function s(t){return e("/tag/create",{name:t})}function c(t){return e(`/tag/delete/${t}`)}export{s as c,c as d,n as f};

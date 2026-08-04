@@ -1,0 +1,1 @@
+import{D as a,E as t}from"./index-fOailAH_.js";function c(){return a("/category/list")}function n(e){return t("/category/create",e)}function u(e,r){return t(`/category/update/${e}`,r)}function g(e){return t(`/category/delete/${e}`)}export{n as c,g as d,c as f,u};
