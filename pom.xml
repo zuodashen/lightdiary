@@ -21,6 +21,7 @@
         <jjwt.version>0.9.1</jjwt.version>
         <mybatis-plus.version>3.5.1</mybatis-plus.version>
         <springfox-swagger.version>3.0.0</springfox-swagger.version>
+        <knife4j.version>3.0.3</knife4j.version>
         <velocity.version>2.3</velocity.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
     </properties>
@@ -72,6 +73,12 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
             <version>${springfox-swagger.version}</version>
+        </dependency>
+        <!--Knife4j 增强 Swagger UI（doc.html）-->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>${knife4j.version}</version>
         </dependency>
         <!--redis依赖配置-->
         <dependency>
@@ -130,6 +137,28 @@
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>${jaxb-api.version}</version>
+        </dependency>
+        <!-- Markdown 渲染 -->
+        <dependency>
+            <groupId>org.commonmark</groupId>
+            <artifactId>commonmark</artifactId>
+            <version>0.21.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.commonmark</groupId>
+            <artifactId>commonmark-ext-gfm-tables</artifactId>
+            <version>0.21.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.commonmark</groupId>
+            <artifactId>commonmark-ext-task-list-items</artifactId>
+            <version>0.21.0</version>
+        </dependency>
+        <!-- 中文转拼音（slug生成） -->
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.1</version>
         </dependency>
     </dependencies>
 
