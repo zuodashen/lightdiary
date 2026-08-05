@@ -1,1 +1,0 @@
-import{D as u,E as t,H as r}from"./index-fOailAH_.js";function d(){return u("/menu/treeList")}function s(e){return t("/menu/create",e)}function o(e,n){return t(`/menu/update/${e}`,n)}function c(e){return t(`/menu/delete/${e}`)}function i(e,n){return r(`/menu/updateHidden/${e}`,{hidden:n})}export{i as a,s as c,c as d,d as f,o as u};

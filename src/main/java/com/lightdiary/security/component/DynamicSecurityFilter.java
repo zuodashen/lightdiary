@@ -45,10 +45,14 @@ public class DynamicSecurityFilter extends AbstractSecurityInterceptor implement
             fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
             return;
         }
-        //白名单请求直接放行
+        //白名单请求直接放行（使用 servlet 相对路径，与 context-path 无关）
         PathMatcher pathMatcher = new AntPathMatcher();
+        String servletPath = request.getServletPath();
+        if (request.getPathInfo() != null) {
+            servletPath = servletPath + request.getPathInfo();
+        }
         for (String path : ignoreUrlsConfig.getUrls()) {
-            if(pathMatcher.match(path,request.getRequestURI())){
+            if(pathMatcher.match(path, servletPath)){
                 fi.getChain().doFilter(fi.getRequest(), fi.getResponse());
                 return;
             }

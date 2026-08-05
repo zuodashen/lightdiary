@@ -26,7 +26,13 @@ mysql -u root -p light_diary < sql/light_diary.sql
 mysql -u root -p light_diary < sql/light_diary_blog.sql
 ```
 
-修改 `src/main/resources/application-dev.yml` 中的 MySQL / Redis 连接信息。
+本地密码不要写进 Git。复制示例后填写：
+
+```bash
+cp src/main/resources/application-dev-local.yml.example \
+   src/main/resources/application-dev-local.yml
+# 编辑 application-dev-local.yml 填入 MySQL / Redis 密码
+```
 
 ### 3. 启动后端
 
@@ -67,6 +73,17 @@ npm run dev
 | 站点 | 站点设置、导航、社交链接 |
 | 系统 | 用户、角色（菜单/资源分配）、菜单、资源 |
 | 账户 | 修改密码、退出登录 |
+
+## 生产部署
+
+部署脚本与文档在本地 `deploy/` 目录（**不提交 Git**，含服务器路径与 `.env` 模板）。
+
+本地开发打包示例：
+
+```bash
+mvn clean package -DskipTests
+# 将 JAR 上传到服务器后执行 install.sh，详见本地 deploy/DEPLOY-FULL.md
+```
 
 ## 项目结构
 

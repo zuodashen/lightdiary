@@ -28,5 +28,18 @@ HELP.md
 ### VS Code ###
 .vscode/
 
+### Frontend build（不提交，部署时 zip 上传服务器）###
+**/node_modules/
+**/dist/
+**/.vite/
+
+### 部署目录（含服务器 IP、路径、密码模板，仅本地保留）###
+deploy/
+
+### 本地开发私密配置（MySQL/Redis 密码）###
+src/main/resources/application-dev-local.yml
+src/main/resources/application-dev-remote.yml
+src/main/resources/generator-local.properties
+
 ### Gradle ###
 .gradle

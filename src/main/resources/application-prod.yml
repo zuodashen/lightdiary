@@ -1,14 +1,20 @@
+server:
+  port: ${SERVER_PORT:8081}
+  servlet:
+    context-path: ${SERVER_SERVLET_CONTEXT_PATH:/lightdiary-api}
+
 spring:
   datasource:
-    url: jdbc:mysql://db:3306/light_diary?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false
-    username: root
-    password: root
+    url: jdbc:mysql://${MYSQL_HOST:mysql}:${MYSQL_PORT:3306}/light_diary?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD}
   redis:
-    host: redis # Redis服务器地址
-    database: 0 # Redis数据库索引（默认为0）
-    port: 6379 # Redis服务器连接端口
-    password: # Redis服务器连接密码（默认为空）
-    timeout: 3000ms # 连接超时时间（毫秒）
+    host: ${REDIS_HOST:redis-lightdiary}
+    port: ${REDIS_PORT:6379}
+    username: ${REDIS_USERNAME:}
+    password: ${REDIS_PASSWORD:}
+    database: ${REDIS_DATABASE:0}
+    timeout: 3000ms
 
 logging:
   file:
@@ -16,3 +22,9 @@ logging:
   level:
     root: info
     com.lightdiary: info
+
+jwt:
+  secret: ${JWT_SECRET:lightdiary-change-me-in-production}
+
+knife4j:
+  enable: ${KNIFE4J_ENABLE:false}
