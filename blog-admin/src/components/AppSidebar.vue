@@ -61,7 +61,7 @@ function isActive(path: string) {
   return route.path === path || route.path.startsWith(path + '/')
 }
 
-const portalUrl = computed(() => 'http://localhost:5173')
+const portalUrl = computed(() => '/lightdiary-web/')
 </script>
 
 <template>

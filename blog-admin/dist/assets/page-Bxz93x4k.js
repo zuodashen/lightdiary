@@ -1,1 +1,0 @@
-import{D as r,E as t}from"./index-fOailAH_.js";function u(){return r("/page/list")}function g(e){return t("/page/create",e)}function p(e,a){return t(`/page/update/${e}`,a)}function s(e){return t(`/page/delete/${e}`)}export{g as c,s as d,u as f,p as u};

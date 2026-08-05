@@ -24,7 +24,7 @@ async function handleUnauthorized() {
 }
 
 const instance = axios.create({
-  baseURL: '',
+  baseURL: '/lightdiary-api',
   timeout: 20000,
   headers: {
     'Content-Type': 'application/json',

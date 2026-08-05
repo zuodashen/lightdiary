@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
+  base: '/lightdiary-web/',
   plugins: [vue(), tailwindcss()],
   resolve: {
     alias: {
@@ -13,7 +14,7 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api': {
+      '/lightdiary-api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
       },

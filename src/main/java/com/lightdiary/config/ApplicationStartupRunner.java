@@ -38,6 +38,7 @@ public class ApplicationStartupRunner implements ApplicationRunner {
         System.out.println("在线接口文档：" + baseUrl + "/doc.html");
         System.out.println("Swagger UI  ：" + baseUrl + "/swagger-ui/");
         System.out.println("前台博客 API：" + baseUrl + "/api/settings");
+        System.out.println("后台登录 API ：" + baseUrl + "/admin/login");
         System.out.println(SEPARATOR);
         System.out.println();
     }

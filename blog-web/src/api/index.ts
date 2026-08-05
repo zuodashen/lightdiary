@@ -4,7 +4,7 @@ import type { CommonResult } from '@/types'
 const SUCCESS_CODE = 200
 
 const instance = axios.create({
-  baseURL: '/api',
+  baseURL: '/lightdiary-api/api',
   timeout: 15000,
   headers: {
     'Content-Type': 'application/json',

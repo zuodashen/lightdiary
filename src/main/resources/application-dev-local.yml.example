@@ -1,0 +1,9 @@
+# 复制为 application-dev-local.yml 后填写本地密码（已在 .gitignore，不会提交）
+#
+#   cp application-dev-local.yml.example application-dev-local.yml
+#
+spring:
+  datasource:
+    password: your_local_mysql_password
+  redis:
+    password: # 本地 Redis 无密码则留空
