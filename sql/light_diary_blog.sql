@@ -18,6 +18,8 @@ CREATE TABLE `blog_article` (
   `category_id` bigint(20) DEFAULT NULL COMMENT '分类ID',
   `status` varchar(20) NOT NULL DEFAULT 'DRAFT' COMMENT '状态：DRAFT草稿/PUBLISHED已发布',
   `views` int(11) NOT NULL DEFAULT 0 COMMENT '浏览量',
+  `word_count` int(11) NOT NULL DEFAULT 0 COMMENT '正文字数',
+  `reading_time` int(11) NOT NULL DEFAULT 1 COMMENT '预计阅读时长(分钟)',
   `is_top` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否置顶',
   `allow_comment` tinyint(1) NOT NULL DEFAULT 1 COMMENT '是否允许评论',
   `publish_time` datetime DEFAULT NULL COMMENT '发布时间',
@@ -171,6 +173,27 @@ CREATE TABLE `blog_comment_config` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评论系统配置表';
 
+-- 微光实验室（创新项目）
+DROP TABLE IF EXISTS `blog_innovation`;
+CREATE TABLE `blog_innovation` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(200) NOT NULL COMMENT '项目名称',
+  `slug` varchar(200) DEFAULT NULL COMMENT 'URL标识',
+  `summary` varchar(500) DEFAULT NULL COMMENT '一句话介绍',
+  `description` text COMMENT '详细描述',
+  `cover_image` varchar(500) DEFAULT NULL COMMENT '封面图',
+  `demo_url` varchar(500) DEFAULT NULL COMMENT '在线演示地址',
+  `github_url` varchar(500) DEFAULT NULL COMMENT '源码地址',
+  `tech_stack` varchar(500) DEFAULT NULL COMMENT '技术栈，逗号分隔',
+  `status` varchar(20) NOT NULL DEFAULT 'BUILDING' COMMENT 'IDEA/BUILDING/LIVE',
+  `is_featured` tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否精选',
+  `sort_order` int(11) NOT NULL DEFAULT 0 COMMENT '排序',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_innovation_slug` (`slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='微光实验室-创新项目';
+
 -- 初始数据
 INSERT INTO `blog_category` (`name`, `slug`, `description`, `parent_id`, `sort_order`, `create_time`)
 VALUES ('技术文档', 'tech', '技术文档分类', 0, 1, NOW());
@@ -200,7 +223,8 @@ INSERT INTO `blog_nav_item` (`name`, `path`, `icon`, `parent_id`, `sort_order`, 
 ('分类', '/categories', 'fa-solid fa-folder', 0, 3, 0),
 ('标签', '/tags', 'fa-solid fa-tags', 0, 4, 0),
 ('书签', '/bookmarks', 'fa-solid fa-bookmark', 0, 5, 0),
-('关于', '/about', 'fa-solid fa-user', 0, 6, 0);
+('实验室', '/lab', 'fa-solid fa-flask', 0, 6, 0),
+('关于', '/about', 'fa-solid fa-user', 0, 7, 0);
 
 INSERT INTO `blog_social_link` (`platform`, `icon`, `url`, `sort_order`) VALUES
 ('GitHub', 'github', 'https://github.com/zuodashen/lightdiary', 1),
@@ -209,6 +233,9 @@ INSERT INTO `blog_social_link` (`platform`, `icon`, `url`, `sort_order`) VALUES
 -- 评论默认关闭，可在后台 /comment/config 或 doc.html 中配置 Giscus
 INSERT INTO `blog_comment_config` (`system`, `config_json`, `enabled`) VALUES
 ('giscus', '{}', 0);
+
+INSERT INTO `blog_innovation` (`title`, `slug`, `summary`, `description`, `github_url`, `tech_stack`, `status`, `is_featured`, `sort_order`, `create_time`, `update_time`) VALUES
+('股票分析小工具', 'stock-agent', '基于 Agent 的智能股票分析助手', '探索 AI Agent 在金融分析场景下的应用，自动化收集信息并生成分析报告。', 'https://github.com/zuodashen/lightdiary', 'Python,Agent,LLM', 'LIVE', 1, 1, NOW(), NOW());
 
 -- 博客管理权限资源
 INSERT INTO `ums_resource_category` (`create_time`, `name`, `sort`) VALUES (NOW(), '博客模块', 0);
@@ -221,6 +248,7 @@ INSERT INTO `ums_resource` (`create_time`, `name`, `url`, `description`, `catego
 (NOW(), '页面管理', '/page/**', '博客页面管理', @blog_category_id),
 (NOW(), '书签分类管理', '/bookmarkCategory/**', '书签分类管理', @blog_category_id),
 (NOW(), '书签管理', '/bookmark/**', '书签管理', @blog_category_id),
+(NOW(), '实验室管理', '/innovation/**', '微光实验室创新项目管理', @blog_category_id),
 (NOW(), '导航管理', '/navItem/**', '导航管理', @blog_category_id),
 (NOW(), '社交链接管理', '/socialLink/**', '社交链接管理', @blog_category_id),
 (NOW(), '站点设置管理', '/siteSetting/**', '站点设置管理', @blog_category_id),
@@ -231,3 +259,9 @@ INSERT INTO `ums_role_resource_relation` (`role_id`, `resource_id`)
 SELECT 5, id FROM `ums_resource` WHERE `category_id` = @blog_category_id;
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ============================================
+-- 增量迁移（已有库执行；新库 CREATE TABLE 已包含可跳过）
+-- ============================================
+-- ALTER TABLE blog_article ADD COLUMN word_count int(11) NOT NULL DEFAULT 0 COMMENT '正文字数' AFTER views;
+-- ALTER TABLE blog_article ADD COLUMN reading_time int(11) NOT NULL DEFAULT 1 COMMENT '预计阅读时长(分钟)' AFTER word_count;

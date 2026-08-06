@@ -27,6 +27,7 @@ const groups: NavGroup[] = [
       { label: '分类', to: '/categories', icon: '📁' },
       { label: '标签', to: '/tags', icon: '🏷️' },
       { label: '书签', to: '/bookmarks', icon: '🔖' },
+      { label: '实验室', to: '/innovations', icon: '⚗️' },
       { label: '页面', to: '/pages', icon: '📄' },
       { label: '评论', to: '/comments', icon: '💬' },
     ],

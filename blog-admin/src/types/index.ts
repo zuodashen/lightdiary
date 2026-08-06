@@ -123,6 +123,37 @@ export interface BookmarkCategory {
   sortOrder?: number
 }
 
+export interface Innovation {
+  id: number
+  title: string
+  slug?: string
+  summary?: string
+  description?: string
+  coverImage?: string
+  demoUrl?: string
+  githubUrl?: string
+  techStack?: string
+  status?: string
+  isFeatured?: number
+  sortOrder?: number
+  createTime?: string
+  updateTime?: string
+}
+
+export interface InnovationParam {
+  title: string
+  slug?: string
+  summary?: string
+  description?: string
+  coverImage?: string
+  demoUrl?: string
+  githubUrl?: string
+  techStack?: string
+  status?: string
+  isFeatured?: number
+  sortOrder?: number
+}
+
 export interface BlogPage {
   id: number
   title: string

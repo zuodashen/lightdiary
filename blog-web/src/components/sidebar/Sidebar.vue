@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { fetchHotArticles } from '@/api/article'
 import { useSiteStore } from '@/stores/site'
+import SiteStatsWidget from '@/components/sidebar/SiteStatsWidget.vue'
 import type { ArticleSummary } from '@/types'
 
 defineProps<{
@@ -26,6 +27,8 @@ onMounted(async () => {
 
 <template>
   <aside class="space-y-5">
+    <SiteStatsWidget />
+
     <section
       v-if="showAnnouncement && siteStore.sidebarAnnouncement"
       class="card p-5"

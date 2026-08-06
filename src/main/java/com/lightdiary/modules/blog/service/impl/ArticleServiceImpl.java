@@ -243,6 +243,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setStatus(StrUtil.isNotBlank(param.getStatus()) ? param.getStatus() : "DRAFT");
         article.setIsTop(param.getIsTop() != null ? param.getIsTop() : 0);
         article.setAllowComment(param.getAllowComment() != null ? param.getAllowComment() : 1);
+        int wordCount = countContentChars(param.getContent());
+        article.setWordCount(wordCount);
+        article.setReadingTime(Math.max(1, (int) Math.ceil(wordCount / 400.0)));
         if (article.getViews() == null) {
             article.setViews(0);
         }
@@ -304,5 +307,20 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
             ref.setSlug(tag.getSlug());
             return ref;
         }).collect(Collectors.toList());
+    }
+
+    private int countContentChars(String content) {
+        if (StrUtil.isBlank(content)) {
+            return 0;
+        }
+        String plain = content
+                .replaceAll("```[\\s\\S]*?```", "")
+                .replaceAll("`[^`]+`", "")
+                .replaceAll("!\\[[^\\]]*]\\([^)]*\\)", "")
+                .replaceAll("\\[[^\\]]+]\\([^)]*\\)", "")
+                .replaceAll("#+\\s*", "")
+                .replaceAll("[>*\\-_]", "")
+                .replaceAll("\\s+", "");
+        return plain.length();
     }
 }

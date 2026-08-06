@@ -42,3 +42,23 @@ export function isExternalUrl(path?: string): boolean {
   if (!path) return false
   return path.startsWith('http://') || path.startsWith('https://')
 }
+
+export function formatCompactNumber(value?: number): string {
+  if (value === undefined || value === null) return '0'
+  if (value >= 10000) {
+    const wan = value / 10000
+    return `${wan >= 10 ? Math.round(wan) : wan.toFixed(1).replace(/\.0$/, '')} 万`
+  }
+  return value.toLocaleString('zh-CN')
+}
+
+export function formatReadingTime(minutes?: number, fallbackText?: string): string {
+  if (minutes && minutes > 0) return `${minutes} 分钟`
+  if (!fallbackText) return ''
+  const plain = fallbackText
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`[^`]+`/g, '')
+    .replace(/[#>*\-\[\]()!_\s]/g, '')
+  if (!plain.length) return ''
+  return `${Math.max(1, Math.ceil(plain.length / 400))} 分钟`
+}

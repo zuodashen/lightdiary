@@ -18,4 +18,12 @@ public interface ArticleMapper extends BaseMapper<Article> {
     List<ArticleListVO> listHot(@Param("limit") Integer limit);
 
     List<ArticleListVO> listAllPublished();
+
+    Long countPublished();
+
+    Long sumPublishedViews();
+
+    Long sumPublishedWordCount();
+
+    List<Article> listPublishedIds();
 }

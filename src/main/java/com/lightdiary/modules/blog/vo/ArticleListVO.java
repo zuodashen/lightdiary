@@ -16,6 +16,8 @@ public class ArticleListVO {
     private String categoryName;
     private List<TagRefVO> tags;
     private Integer views;
+    private Integer wordCount;
+    private Integer readingTime;
     private Integer isTop;
     private Date publishTime;
     private Date createTime;

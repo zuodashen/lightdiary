@@ -4,10 +4,12 @@ import com.lightdiary.common.api.CommonResult;
 import com.lightdiary.modules.blog.model.CommentConfig;
 import com.lightdiary.modules.blog.model.NavItem;
 import com.lightdiary.modules.blog.model.SocialLink;
+import com.lightdiary.modules.blog.service.BlogStatsService;
 import com.lightdiary.modules.blog.service.CommentService;
 import com.lightdiary.modules.blog.service.NavItemService;
 import com.lightdiary.modules.blog.service.SiteSettingService;
 import com.lightdiary.modules.blog.service.SocialLinkService;
+import com.lightdiary.modules.blog.vo.SiteStatsVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,8 @@ public class PortalSiteController {
     private SiteSettingService siteSettingService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private BlogStatsService blogStatsService;
 
     @ApiOperation("导航菜单")
     @GetMapping("/nav")
@@ -54,5 +58,11 @@ public class PortalSiteController {
     @GetMapping("/comment/config")
     public CommonResult<CommentConfig> commentConfig() {
         return CommonResult.success(commentService.getConfig());
+    }
+
+    @ApiOperation("站点统计数据")
+    @GetMapping("/stats")
+    public CommonResult<SiteStatsVO> stats() {
+        return CommonResult.success(blogStatsService.getSiteStats());
     }
 }

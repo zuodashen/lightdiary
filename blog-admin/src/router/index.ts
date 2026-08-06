@@ -62,6 +62,12 @@ const router = createRouter({
           meta: { title: '书签管理' },
         },
         {
+          path: 'innovations',
+          name: 'innovations',
+          component: () => import('@/views/innovation/InnovationList.vue'),
+          meta: { title: '实验室管理' },
+        },
+        {
           path: 'pages',
           name: 'pages',
           component: () => import('@/views/page/PageList.vue'),

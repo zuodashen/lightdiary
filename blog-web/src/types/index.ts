@@ -30,6 +30,8 @@ export interface ArticleSummary {
   categoryName?: string
   tags?: TagRef[]
   views?: number
+  wordCount?: number
+  readingTime?: number
   isTop?: boolean
   publishTime?: string
   createTime?: string
@@ -99,6 +101,23 @@ export interface BookmarkCategory {
   bookmarks: Bookmark[]
 }
 
+export interface Innovation {
+  id: number
+  title: string
+  slug?: string
+  summary?: string
+  description?: string
+  coverImage?: string
+  demoUrl?: string
+  githubUrl?: string
+  techStack?: string
+  status?: string
+  isFeatured?: number
+  sortOrder?: number
+  createTime?: string
+  updateTime?: string
+}
+
 export interface NavItem {
   id: number
   name: string
@@ -134,6 +153,15 @@ export interface CommentConfig {
   system: string
   configJson: string
   enabled: boolean
+}
+
+export interface SiteStats {
+  articleCount: number
+  totalViews: number
+  totalWords: number
+  categoryCount: number
+  tagCount: number
+  runningDays: number
 }
 
 export interface ArticleQuery {

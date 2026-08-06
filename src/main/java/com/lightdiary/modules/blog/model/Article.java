@@ -49,6 +49,12 @@ public class Article implements Serializable {
     @ApiModelProperty("浏览量")
     private Integer views;
 
+    @ApiModelProperty("正文字数")
+    private Integer wordCount;
+
+    @ApiModelProperty("预计阅读时长(分钟)")
+    private Integer readingTime;
+
     @ApiModelProperty("是否置顶")
     private Integer isTop;
 

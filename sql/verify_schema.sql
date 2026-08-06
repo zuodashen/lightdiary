@@ -60,7 +60,8 @@ FROM (
   SELECT 'blog_social_link' UNION ALL
   SELECT 'blog_site_setting' UNION ALL
   SELECT 'blog_comment' UNION ALL
-  SELECT 'blog_comment_config'
+  SELECT 'blog_comment_config' UNION ALL
+  SELECT 'blog_innovation'
 ) expected
 LEFT JOIN information_schema.tables t
   ON t.table_schema = 'light_diary' AND t.table_name = expected.table_name

@@ -7,7 +7,7 @@ import Loading from '@/components/common/Loading.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
 import { useSiteStore } from '@/stores/site'
 import type { ArticleDetail } from '@/types'
-import { formatDate } from '@/utils/format'
+import { formatDate, formatCompactNumber, formatReadingTime } from '@/utils/format'
 
 const route = useRoute()
 const siteStore = useSiteStore()
@@ -58,6 +58,10 @@ onMounted(loadArticle)
           </RouterLink>
           <span v-if="article.publishTime">{{ formatDate(article.publishTime) }}</span>
           <span v-if="article.views !== undefined">· {{ article.views }} 阅读</span>
+          <span v-if="article.wordCount">· {{ formatCompactNumber(article.wordCount) }} 字</span>
+          <span v-if="formatReadingTime(article.readingTime, article.content)">
+            · 约 {{ formatReadingTime(article.readingTime, article.content) }}
+          </span>
         </div>
         <h1 class="text-3xl font-bold tracking-tight sm:text-4xl dark:text-white light:text-gray-900">
           {{ article.title }}

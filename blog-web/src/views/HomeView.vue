@@ -7,6 +7,7 @@ import Sidebar from '@/components/sidebar/Sidebar.vue'
 import Pagination from '@/components/common/Pagination.vue'
 import Loading from '@/components/common/Loading.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
+import SiteStatsWidget from '@/components/sidebar/SiteStatsWidget.vue'
 import { useSiteStore } from '@/stores/site'
 import type { ArticleSummary } from '@/types'
 
@@ -108,6 +109,8 @@ onMounted(() => {
             </svg>
           </div>
         </form>
+
+        <SiteStatsWidget variant="hero" />
       </div>
     </section>
 

@@ -11,6 +11,8 @@
         <result column="category_id" property="categoryId"/>
         <result column="category_name" property="categoryName"/>
         <result column="views" property="views"/>
+        <result column="word_count" property="wordCount"/>
+        <result column="reading_time" property="readingTime"/>
         <result column="is_top" property="isTop"/>
         <result column="publish_time" property="publishTime"/>
         <result column="create_time" property="createTime"/>
@@ -18,7 +20,8 @@
 
     <sql id="PublishedArticleSelect">
         SELECT a.id, a.title, a.slug, a.summary, a.cover_image, a.category_id,
-               c.name AS category_name, a.views, a.is_top, a.publish_time, a.create_time
+               c.name AS category_name, a.views, a.word_count, a.reading_time,
+               a.is_top, a.publish_time, a.create_time
         FROM blog_article a
         LEFT JOIN blog_category c ON a.category_id = c.id
         WHERE a.status = 'PUBLISHED'
@@ -51,5 +54,21 @@
     <select id="listAllPublished" resultMap="ArticleListVOMap">
         <include refid="PublishedArticleSelect"/>
         ORDER BY a.publish_time DESC
+    </select>
+
+    <select id="countPublished" resultType="java.lang.Long">
+        SELECT COUNT(*) FROM blog_article WHERE status = 'PUBLISHED'
+    </select>
+
+    <select id="sumPublishedViews" resultType="java.lang.Long">
+        SELECT COALESCE(SUM(views), 0) FROM blog_article WHERE status = 'PUBLISHED'
+    </select>
+
+    <select id="sumPublishedWordCount" resultType="java.lang.Long">
+        SELECT COALESCE(SUM(word_count), 0) FROM blog_article WHERE status = 'PUBLISHED'
+    </select>
+
+    <select id="listPublishedIds" resultType="com.lightdiary.modules.blog.model.Article">
+        SELECT id, views FROM blog_article WHERE status = 'PUBLISHED'
     </select>
 </mapper>
