@@ -43,7 +43,9 @@ public class LightDiarySecurityConfig {
                 Map<String, ConfigAttribute> map = new ConcurrentHashMap<>();
                 List<UmsResource> resourceList = resourceService.list();
                 for (UmsResource resource : resourceList) {
-                    map.put(resource.getUrl(), new org.springframework.security.access.SecurityConfig(resource.getId() + ":" + resource.getName()));
+                    if (resource.getUrl() != null && !resource.getUrl().isEmpty()) {
+                        map.put(resource.getUrl(), new org.springframework.security.access.SecurityConfig(resource.getUrl()));
+                    }
                 }
                 return map;
             }

@@ -18,6 +18,7 @@ import com.lightdiary.modules.ums.model.*;
 import com.lightdiary.modules.ums.service.UmsAdminCacheService;
 import com.lightdiary.modules.ums.service.UmsAdminRoleRelationService;
 import com.lightdiary.modules.ums.service.UmsAdminService;
+import com.lightdiary.security.component.DynamicSecurityMetadataSource;
 import com.lightdiary.security.util.JwtTokenUtil;
 import com.lightdiary.security.util.SpringUtil;
 import org.slf4j.Logger;
@@ -100,6 +101,11 @@ public class UmsAdminServiceImpl extends ServiceImpl<UmsAdminMapper,UmsAdmin> im
         String token = null;
         //密码需要客户端加密后传递
         try {
+            UmsAdmin cachedAdmin = getAdminByUsername(username);
+            if (cachedAdmin != null) {
+                getCacheService().delResourceList(cachedAdmin.getId());
+            }
+            SpringUtil.getBean(DynamicSecurityMetadataSource.class).clearDataSource();
             UserDetails userDetails = loadUserByUsername(username);
             if(!passwordEncoder.matches(password,userDetails.getPassword())){
                 Asserts.fail("密码不正确");

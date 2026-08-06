@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,9 +25,14 @@ public class AdminUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        //返回当前用户的角色
+        if (resourceList == null || resourceList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        // 使用 URL 作为权限标识，避免资源 ID 变更或重复 URL 导致鉴权失败
         return resourceList.stream()
-                .map(role ->new SimpleGrantedAuthority(role.getId()+":"+role.getName()))
+                .filter(resource -> resource.getUrl() != null && !resource.getUrl().isEmpty())
+                .map(resource -> new SimpleGrantedAuthority(resource.getUrl()))
+                .distinct()
                 .collect(Collectors.toList());
     }
 
