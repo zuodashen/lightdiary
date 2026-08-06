@@ -9,7 +9,8 @@ defineProps<{
 <template>
   <div class="flex flex-col items-center justify-center py-20 text-center">
     <div
-      class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-3xl"
+      class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl text-3xl"
+      style="background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 15%, transparent), color-mix(in srgb, var(--color-secondary) 15%, transparent))"
     >
       {{ icon || '📭' }}
     </div>

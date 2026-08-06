@@ -34,11 +34,11 @@
   }
 
   .dark body {
-    @apply bg-[#0a0a0c] text-gray-100;
+    @apply bg-[#06060a] text-gray-100;
   }
 
   .light body {
-    @apply bg-gray-50 text-gray-900;
+    @apply bg-[#f4f6fb] text-gray-900;
   }
 
   ::selection {
@@ -55,16 +55,125 @@
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
   }
 
+  /* Ambient background mesh */
+  .ambient-bg {
+    @apply pointer-events-none fixed inset-0 -z-10 overflow-hidden;
+  }
+
+  .ambient-bg::before,
+  .ambient-bg::after {
+    content: '';
+    @apply absolute rounded-full blur-3xl;
+  }
+
+  .dark .ambient-bg::before {
+    width: 55vw;
+    height: 55vw;
+    top: -15%;
+    left: -10%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-secondary) 28%, transparent) 0%,
+      transparent 70%
+    );
+    animation: ambient-drift 18s ease-in-out infinite alternate;
+  }
+
+  .dark .ambient-bg::after {
+    width: 50vw;
+    height: 50vw;
+    bottom: -10%;
+    right: -8%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-primary) 22%, transparent) 0%,
+      transparent 70%
+    );
+    animation: ambient-drift 22s ease-in-out infinite alternate-reverse;
+  }
+
+  .light .ambient-bg::before {
+    width: 55vw;
+    height: 55vw;
+    top: -15%;
+    left: -10%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-secondary) 12%, transparent) 0%,
+      transparent 70%
+    );
+  }
+
+  .light .ambient-bg::after {
+    width: 50vw;
+    height: 50vw;
+    bottom: -10%;
+    right: -8%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-primary) 10%, transparent) 0%,
+      transparent 70%
+    );
+  }
+
+  .gradient-text {
+    background: linear-gradient(
+      135deg,
+      var(--color-secondary) 0%,
+      var(--color-primary) 50%,
+      color-mix(in srgb, var(--color-primary) 70%, #f59e0b) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .glass-panel {
+    @apply rounded-full border backdrop-blur-xl transition-all duration-300;
+  }
+
+  .dark .glass-panel {
+    @apply border-white/10 bg-white/5 shadow-[0_8px_32px_rgba(0,0,0,0.35)];
+  }
+
+  .light .glass-panel {
+    @apply border-black/6 bg-white/70 shadow-[0_8px_32px_rgba(0,0,0,0.06)];
+  }
+
+  .header-transparent {
+    @apply bg-transparent;
+  }
+
+  .dark .header-scrolled {
+    @apply border-b border-white/5 bg-[#06060a]/60 backdrop-blur-md;
+  }
+
+  .light .header-scrolled {
+    @apply border-b border-black/5 bg-[#f4f6fb]/70 backdrop-blur-md;
+  }
+
+  .nav-pill {
+    @apply rounded-full transition-all duration-300;
+  }
+
+  .dark .nav-pill {
+    @apply bg-white/3;
+  }
+
+  .light .nav-pill {
+    @apply bg-black/3;
+  }
+
   .card {
     @apply rounded-2xl border transition-all duration-300;
   }
 
   .dark .card {
-    @apply border-white/8 bg-[#141418]/80 backdrop-blur-sm;
+    @apply border-white/8 bg-[#141418]/60 backdrop-blur-md;
   }
 
   .light .card {
-    @apply border-black/6 bg-white shadow-sm;
+    @apply border-black/6 bg-white/80 shadow-sm backdrop-blur-sm;
   }
 
   .card-hover {
@@ -80,17 +189,27 @@
   }
 
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-medium text-white transition-all duration-200;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+    @apply inline-flex items-center justify-center rounded-full px-5 py-2.5 text-sm font-medium text-white transition-all duration-300;
+    background: linear-gradient(
+      135deg,
+      var(--color-secondary) 0%,
+      var(--color-primary) 55%,
+      color-mix(in srgb, var(--color-primary) 80%, #a855f7) 100%
+    );
+    box-shadow:
+      0 4px 16px color-mix(in srgb, var(--color-primary) 25%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
 
   .btn-primary:hover {
-    @apply opacity-90 shadow-lg;
-    box-shadow: 0 8px 24px color-mix(in srgb, var(--color-primary) 30%, transparent);
+    @apply -translate-y-0.5;
+    box-shadow:
+      0 8px 28px color-mix(in srgb, var(--color-primary) 35%, transparent),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
   }
 
   .btn-ghost {
-    @apply inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm transition-all duration-200;
+    @apply inline-flex items-center justify-center rounded-full px-4 py-2 text-sm transition-all duration-200;
   }
 
   .dark .btn-ghost {
@@ -99,6 +218,36 @@
 
   .light .btn-ghost {
     @apply text-gray-600 hover:bg-black/5 hover:text-gray-900;
+  }
+
+  .nav-link {
+    @apply relative inline-flex items-center rounded-full px-4 py-2 text-sm font-medium transition-all duration-200;
+  }
+
+  .dark .nav-link {
+    @apply text-gray-400 hover:text-gray-200;
+  }
+
+  .light .nav-link {
+    @apply text-gray-500 hover:text-gray-800;
+  }
+
+  .nav-link-active {
+    @apply text-white shadow-md;
+    background: linear-gradient(
+      135deg,
+      var(--color-secondary) 0%,
+      var(--color-primary) 100%
+    );
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-primary) 30%, transparent);
+  }
+
+  .dark .nav-link-active {
+    @apply text-white;
+  }
+
+  .light .nav-link-active {
+    @apply text-white;
   }
 
   .tag-pill {
@@ -240,6 +389,37 @@
 
   .light .prose-blog hr {
     @apply border-t border-gray-200;
+  }
+
+  .about-hero {
+    @apply relative overflow-hidden rounded-3xl border px-8 py-16 text-center sm:px-12 sm:py-20;
+  }
+
+  .dark .about-hero {
+    @apply border-white/8 bg-white/3 backdrop-blur-md;
+  }
+
+  .light .about-hero {
+    @apply border-black/6 bg-white/60 backdrop-blur-sm;
+  }
+
+  .about-hero::before {
+    content: '';
+    @apply pointer-events-none absolute inset-0;
+    background: radial-gradient(
+      ellipse at 50% 0%,
+      color-mix(in srgb, var(--color-primary) 18%, transparent) 0%,
+      transparent 65%
+    );
+  }
+}
+
+@keyframes ambient-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    transform: translate(3%, 5%) scale(1.08);
   }
 }
 

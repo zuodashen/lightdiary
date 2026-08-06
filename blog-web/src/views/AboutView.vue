@@ -1,24 +1,34 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { fetchPageBySlug } from '@/api/page'
 import Loading from '@/components/common/Loading.vue'
-import EmptyState from '@/components/common/EmptyState.vue'
 import { useSiteStore } from '@/stores/site'
 import type { PageContent } from '@/types'
 
 const siteStore = useSiteStore()
 const page = ref<PageContent | null>(null)
 const loading = ref(true)
-const error = ref('')
+
+const fallbackLines = [
+  '记录思考，沉淀时光。',
+  '在代码与文字之间，寻找属于自己的光。',
+  '相信长期主义，相信简洁的力量。',
+]
+
+const hasCmsContent = computed(
+  () => Boolean(page.value?.contentHtml?.trim() || page.value?.content?.trim()),
+)
 
 onMounted(async () => {
   try {
     page.value = await fetchPageBySlug('about')
     if (page.value?.title) {
       document.title = `${page.value.title} · ${siteStore.siteTitle}`
+    } else {
+      document.title = `关于 · ${siteStore.siteTitle}`
     }
-  } catch (e) {
-    error.value = e instanceof Error ? e.message : '加载失败'
+  } catch {
+    document.title = `关于 · ${siteStore.siteTitle}`
   } finally {
     loading.value = false
   }
@@ -26,24 +36,49 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container-blog max-w-3xl">
+  <div class="container-blog max-w-2xl">
     <Loading v-if="loading" text="加载页面..." />
-    <EmptyState
-      v-else-if="error || !page"
-      title="页面不存在"
-      :description="error || '找不到关于页面'"
-      icon="👤"
-    />
-    <article v-else>
-      <header class="mb-8 text-center">
-        <h1 class="text-3xl font-bold dark:text-white light:text-gray-900">
-          {{ page.title }}
+
+    <article v-else class="about-hero">
+      <div class="relative">
+        <p class="mb-3 text-xs font-medium tracking-[0.2em] uppercase text-muted">
+          About
+        </p>
+
+        <h1 class="mb-10 text-3xl font-bold tracking-tight sm:text-4xl">
+          <span class="gradient-text">{{ page?.title || '关于' }}</span>
         </h1>
-      </header>
-      <div
-        class="prose-blog"
-        v-html="page.contentHtml || page.content"
-      />
+
+        <div
+          v-if="hasCmsContent"
+          class="prose-blog text-left"
+          v-html="page!.contentHtml || page!.content"
+        />
+
+        <div v-else class="space-y-6">
+          <p
+            v-for="(line, idx) in fallbackLines"
+            :key="idx"
+            class="text-base leading-relaxed sm:text-lg"
+            :class="idx === 0 ? 'font-medium dark:text-white light:text-gray-900' : 'text-muted'"
+          >
+            {{ line }}
+          </p>
+        </div>
+
+        <p
+          v-if="siteStore.siteAuthor"
+          class="mt-12 text-sm text-muted"
+        >
+          — {{ siteStore.siteAuthor }}
+        </p>
+      </div>
     </article>
   </div>
 </template>
+
+<style scoped>
+.text-muted {
+  color: var(--color-muted, #8b8b9a);
+}
+</style>
