@@ -52,10 +52,10 @@ function goTo(page: number) {
       <span v-if="page === '...'" class="px-2 text-muted">…</span>
       <button
         v-else
-        class="min-w-9 rounded-lg px-3 py-1.5 text-sm transition-all duration-200"
+        class="min-w-9 rounded-full px-3 py-1.5 text-sm transition-all duration-200"
         :class="
           page === pageNum
-            ? 'bg-primary text-white shadow-md shadow-primary/25'
+            ? 'btn-primary !py-1.5 !px-3 min-w-9 shadow-md'
             : 'btn-ghost'
         "
         @click="goTo(page)"

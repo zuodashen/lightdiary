@@ -67,18 +67,15 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
+  <div class="home-page">
     <!-- Banner -->
-    <section class="relative mb-10 overflow-hidden">
-      <div
-        class="absolute inset-0 opacity-30"
-        style="background: radial-gradient(ellipse at 50% 0%, var(--color-primary) 0%, transparent 60%)"
-      />
-      <div class="container-blog relative py-16 text-center sm:py-20">
+    <section class="hero-section relative mb-10 overflow-visible">
+      <div class="hero-glow" aria-hidden="true" />
+      <div class="container-blog relative py-10 text-center sm:py-14">
         <h1
-          class="mb-3 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl dark:text-white light:text-gray-900"
+          class="mb-3 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
         >
-          {{ siteStore.siteTitle }}
+          <span class="gradient-text">{{ siteStore.siteTitle }}</span>
         </h1>
         <p
           v-if="siteStore.siteSubtitle"
@@ -93,7 +90,7 @@ onMounted(() => {
               v-model="keyword"
               type="search"
               placeholder="搜索文章..."
-              class="w-full rounded-2xl border py-3 pr-4 pl-11 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/40 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 light:border-gray-200 light:bg-white light:text-gray-900"
+              class="w-full rounded-full border py-3 pr-4 pl-11 text-sm transition-all focus:outline-none focus:ring-2 focus:ring-primary/40 dark:border-white/10 dark:bg-white/5 dark:text-white dark:placeholder:text-gray-500 light:border-gray-200 light:bg-white/80 light:text-gray-900 light:backdrop-blur-sm"
             />
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -147,5 +144,35 @@ onMounted(() => {
 <style scoped>
 .text-muted {
   color: var(--color-muted, #8b8b9a);
+}
+
+.home-page {
+  margin-top: -0.75rem;
+}
+
+.hero-section {
+  margin-top: -0.25rem;
+}
+
+.hero-glow {
+  pointer-events: none;
+  position: absolute;
+  top: -6rem;
+  left: -1rem;
+  right: -1rem;
+  bottom: 0;
+  background:
+    radial-gradient(
+      ellipse 80% 60% at 25% 0%,
+      color-mix(in srgb, var(--color-secondary) 30%, transparent) 0%,
+      transparent 70%
+    ),
+    radial-gradient(
+      ellipse 70% 55% at 75% 5%,
+      color-mix(in srgb, var(--color-primary) 24%, transparent) 0%,
+      transparent 65%
+    );
+  mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, black 75%, transparent 100%);
 }
 </style>

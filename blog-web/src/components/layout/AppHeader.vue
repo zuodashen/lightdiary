@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useSiteStore } from '@/stores/site'
 import { useThemeStore } from '@/stores/theme'
@@ -10,6 +10,8 @@ const themeStore = useThemeStore()
 const route = useRoute()
 const mobileOpen = ref(false)
 const scrolled = ref(false)
+
+const isHome = computed(() => route.path === '/')
 
 function onScroll() {
   scrolled.value = window.scrollY > 20
@@ -32,22 +34,20 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 
 <template>
   <header
-    class="sticky top-0 z-40 border-b transition-all duration-300"
-    :class="
-      scrolled
-        ? 'dark:border-white/8 dark:bg-[#0a0a0c]/90 light:border-black/6 light:bg-white/90 backdrop-blur-xl shadow-sm'
-        : 'border-transparent bg-transparent'
-    "
+    class="sticky top-0 z-40 transition-all duration-300"
+    :class="[
+      isHome ? 'pt-3' : 'pt-4',
+      scrolled ? 'header-scrolled' : 'header-transparent',
+    ]"
   >
-    <div class="container-blog flex h-16 items-center justify-between">
+    <div class="container-blog relative flex items-center justify-between gap-4 pb-2">
       <RouterLink
         to="/"
-        class="group flex items-center gap-2 transition-opacity hover:opacity-80"
+        class="group relative z-10 flex shrink-0 items-center gap-2.5 transition-opacity hover:opacity-90"
         @click="closeMobile"
       >
         <div
-          class="flex h-9 w-9 items-center justify-center rounded-xl text-sm font-bold text-white"
-          style="background: linear-gradient(135deg, var(--color-primary), var(--color-secondary))"
+          class="logo-avatar flex h-8 w-8 items-center justify-center rounded-xl text-sm font-bold text-white sm:h-9 sm:w-9"
         >
           {{ siteStore.siteTitle.charAt(0).toUpperCase() }}
         </div>
@@ -61,31 +61,31 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         </div>
       </RouterLink>
 
-      <nav class="hidden items-center gap-1 md:flex">
+      <nav class="nav-pill absolute left-1/2 hidden -translate-x-1/2 items-center gap-0.5 px-1.5 py-1 md:flex">
         <template v-for="item in siteStore.navItems" :key="item.id">
           <a
             v-if="item.isExternal || isExternalUrl(item.path)"
             :href="item.path"
             target="_blank"
             rel="noopener noreferrer"
-            class="btn-ghost px-3 py-2 text-sm"
+            class="nav-link"
           >
             {{ item.name }}
           </a>
           <RouterLink
             v-else
             :to="resolveNavPath(item.path)"
-            class="btn-ghost px-3 py-2 text-sm"
-            :class="{ '!text-primary font-medium': isActive(item.path) }"
+            class="nav-link"
+            :class="{ 'nav-link-active': isActive(item.path) }"
           >
             {{ item.name }}
           </RouterLink>
         </template>
       </nav>
 
-      <div class="flex items-center gap-2">
+      <div class="relative z-10 flex shrink-0 items-center gap-1">
         <button
-          class="btn-ghost rounded-xl p-2"
+          class="btn-ghost p-2"
           :aria-label="themeStore.isDark ? '切换到浅色模式' : '切换到深色模式'"
           @click="themeStore.toggle()"
         >
@@ -122,7 +122,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
         </button>
 
         <button
-          class="btn-ghost rounded-xl p-2 md:hidden"
+          class="btn-ghost p-2 md:hidden"
           aria-label="菜单"
           @click="mobileOpen = !mobileOpen"
         >
@@ -162,7 +162,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
     >
       <nav
         v-if="mobileOpen"
-        class="border-t px-4 py-3 md:hidden dark:border-white/8 light:border-black/6"
+        class="container-blog nav-pill mb-2 flex flex-col gap-0.5 p-2 md:hidden"
       >
         <template v-for="item in siteStore.navItems" :key="item.id">
           <a
@@ -170,7 +170,7 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
             :href="item.path"
             target="_blank"
             rel="noopener noreferrer"
-            class="block rounded-lg px-3 py-2.5 text-sm dark:text-gray-300 light:text-gray-700"
+            class="nav-link"
             @click="closeMobile"
           >
             {{ item.name }}
@@ -178,12 +178,8 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
           <RouterLink
             v-else
             :to="resolveNavPath(item.path)"
-            class="block rounded-lg px-3 py-2.5 text-sm"
-            :class="
-              isActive(item.path)
-                ? 'bg-primary/10 text-primary font-medium'
-                : 'dark:text-gray-300 light:text-gray-700'
-            "
+            class="nav-link"
+            :class="{ 'nav-link-active': isActive(item.path) }"
             @click="closeMobile"
           >
             {{ item.name }}
@@ -197,5 +193,14 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 <style scoped>
 .text-muted {
   color: var(--color-muted, #8b8b9a);
+}
+
+.logo-avatar {
+  background: linear-gradient(
+    135deg,
+    var(--color-secondary) 0%,
+    var(--color-primary) 100%
+  );
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary) 35%, transparent);
 }
 </style>
