@@ -20,11 +20,20 @@
 
 ### 2. 数据库
 
+**全新部署只需按顺序执行以下两个 SQL**（不要跳过 `light_diary.sql`，也不要额外跑 `fix_*` / `migrate_*`）：
+
 ```bash
 mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS light_diary DEFAULT CHARACTER SET utf8mb4;"
-mysql -u root -p light_diary < sql/light_diary.sql
-mysql -u root -p light_diary < sql/light_diary_blog.sql
+mysql -u root -p --default-character-set=utf8mb4 light_diary < sql/light_diary.sql
+mysql -u root -p --default-character-set=utf8mb4 light_diary < sql/light_diary_blog.sql
 ```
+
+| 文件 | 内容 |
+| ---- | ---- |
+| `sql/light_diary.sql` | 权限系统（用户/角色/菜单/资源，含 `/role/**`、`/admin/**` 等） |
+| `sql/light_diary_blog.sql` | 博客业务表 + 博客权限 + 实验室 + 导航种子数据 |
+
+已有旧库升级时才使用 `sql/migrate_*.sql`；权限异常时才用 `sql/fix_*.sql` 补救。
 
 本地密码不要写进 Git。复制示例后填写：
 

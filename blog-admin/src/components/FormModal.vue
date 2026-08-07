@@ -3,10 +3,12 @@ defineProps<{
   show: boolean
   title: string
   loading?: boolean
+  confirmText?: string
 }>()
 
 const emit = defineEmits<{
   close: []
+  confirm: []
 }>()
 </script>
 
@@ -19,19 +21,25 @@ const emit = defineEmits<{
         @click.self="emit('close')"
       >
         <div
-          class="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] shadow-2xl"
+          class="flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-elevated)] shadow-2xl"
         >
-          <div class="sticky top-0 flex items-center justify-between border-b border-[var(--color-border)] bg-[var(--color-surface-elevated)] px-5 py-4">
+          <div class="flex shrink-0 items-center justify-between border-b border-[var(--color-border)] px-5 py-4">
             <h3 class="text-base font-semibold text-white">{{ title }}</h3>
             <button type="button" class="btn-ghost px-2 py-1" @click="emit('close')">✕</button>
           </div>
-          <form class="p-5" @submit.prevent>
-            <slot />
-            <div class="mt-6 flex justify-end gap-3">
+          <form class="flex min-h-0 flex-1 flex-col" @submit.prevent="emit('confirm')">
+            <div class="min-h-0 flex-1 overflow-y-auto p-5">
+              <slot />
+            </div>
+            <div class="flex shrink-0 justify-end gap-3 border-t border-[var(--color-border)] px-5 py-4">
               <button type="button" class="btn-secondary" :disabled="loading" @click="emit('close')">
                 取消
               </button>
-              <slot name="actions" />
+              <slot name="actions">
+                <button type="submit" class="btn-primary" :disabled="loading">
+                  {{ loading ? '保存中...' : (confirmText || '保存') }}
+                </button>
+              </slot>
             </div>
           </form>
         </div>

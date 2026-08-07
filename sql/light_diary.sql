@@ -144,15 +144,15 @@ CREATE TABLE `ums_resource` (
   `url` varchar(200) DEFAULT NULL COMMENT '资源URL',
   `description` varchar(500) DEFAULT NULL COMMENT '描述',
   `category_id` bigint(20) DEFAULT NULL COMMENT '资源分类ID',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8 COMMENT='后台资源表';
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_resource_url` (`url`)
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COMMENT='后台资源表';
 
 -- ----------------------------
 -- Records of ums_resource
 -- ----------------------------
 INSERT INTO `ums_resource` VALUES ('1', '2020-02-04 17:04:55', '商品品牌管理', '/brand/**', null, '1');
-INSERT INTO `ums_resource` VALUES ('2', '2020-02-04 17:05:35', '商品属性分类管理', '/productAttribute/**', null, '1');
-INSERT INTO `ums_resource` VALUES ('3', '2020-02-04 17:06:13', '商品属性管理', '/productAttribute/**', null, '1');
+INSERT INTO `ums_resource` VALUES ('2', '2020-02-04 17:05:35', '商品属性管理', '/productAttribute/**', null, '1');
 INSERT INTO `ums_resource` VALUES ('4', '2020-02-04 17:07:15', '商品分类管理', '/productCategory/**', null, '1');
 INSERT INTO `ums_resource` VALUES ('5', '2020-02-04 17:09:16', '商品管理', '/product/**', null, '1');
 INSERT INTO `ums_resource` VALUES ('6', '2020-02-04 17:09:53', '商品库存管理', '/sku/**', null, '1');
@@ -310,7 +310,6 @@ INSERT INTO `ums_role_resource_relation` VALUES ('106', '2', '11');
 INSERT INTO `ums_role_resource_relation` VALUES ('107', '2', '12');
 INSERT INTO `ums_role_resource_relation` VALUES ('142', '5', '1');
 INSERT INTO `ums_role_resource_relation` VALUES ('143', '5', '2');
-INSERT INTO `ums_role_resource_relation` VALUES ('144', '5', '3');
 INSERT INTO `ums_role_resource_relation` VALUES ('145', '5', '4');
 INSERT INTO `ums_role_resource_relation` VALUES ('146', '5', '5');
 INSERT INTO `ums_role_resource_relation` VALUES ('147', '5', '6');
@@ -338,7 +337,6 @@ INSERT INTO `ums_role_resource_relation` VALUES ('168', '5', '28');
 INSERT INTO `ums_role_resource_relation` VALUES ('169', '5', '29');
 INSERT INTO `ums_role_resource_relation` VALUES ('170', '1', '1');
 INSERT INTO `ums_role_resource_relation` VALUES ('171', '1', '2');
-INSERT INTO `ums_role_resource_relation` VALUES ('172', '1', '3');
 INSERT INTO `ums_role_resource_relation` VALUES ('173', '1', '4');
 INSERT INTO `ums_role_resource_relation` VALUES ('174', '1', '5');
 INSERT INTO `ums_role_resource_relation` VALUES ('175', '1', '6');

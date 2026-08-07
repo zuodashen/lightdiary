@@ -139,9 +139,7 @@ onMounted(async () => {
 
       <div v-if="filteredItems.length" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         <article
-          v-for="item in filteredItems.filter(
-            (i) => !(activeFilter === 'ALL' && featuredItem && i.id === featuredItem.id),
-          )"
+          v-for="item in filteredItems"
           :key="item.id"
           class="card card-hover lab-card overflow-hidden"
         >

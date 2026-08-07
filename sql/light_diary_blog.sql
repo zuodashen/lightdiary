@@ -1,5 +1,6 @@
 -- ============================================
 -- lightdiary 博客业务表
+-- 全新部署：必须先执行 sql/light_diary.sql，再执行本文件（仅此两个，无需 fix_* / migrate_*）
 -- ============================================
 
 SET NAMES utf8mb4;
@@ -237,26 +238,52 @@ INSERT INTO `blog_comment_config` (`system`, `config_json`, `enabled`) VALUES
 INSERT INTO `blog_innovation` (`title`, `slug`, `summary`, `description`, `github_url`, `tech_stack`, `status`, `is_featured`, `sort_order`, `create_time`, `update_time`) VALUES
 ('股票分析小工具', 'stock-agent', '基于 Agent 的智能股票分析助手', '探索 AI Agent 在金融分析场景下的应用，自动化收集信息并生成分析报告。', 'https://github.com/zuodashen/lightdiary', 'Python,Agent,LLM', 'LIVE', 1, 1, NOW(), NOW());
 
--- 博客管理权限资源
-INSERT INTO `ums_resource_category` (`create_time`, `name`, `sort`) VALUES (NOW(), '博客模块', 0);
-SET @blog_category_id = LAST_INSERT_ID();
+INSERT INTO `blog_innovation` (`title`, `slug`, `summary`, `description`, `demo_url`, `github_url`, `tech_stack`, `status`, `is_featured`, `sort_order`, `create_time`, `update_time`)
+SELECT
+  '微光博客 lightdiary', 'lightdiary',
+  'Spring Boot + Vue 3 前后端分离个人博客，含 CMS 后台与微光实验室',
+  'lightdiary（微光博客）是自研的全栈博客系统：后端 Spring Boot + MyBatis-Plus 提供 REST API 与 RBAC 权限；前台 blog-web 为 Vue 3 + Vite + Tailwind 暗色主题站点；后台 blog-admin 支持文章、分类、书签、评论（Giscus）、站点配置与实验室项目管理。数据层 MySQL + Redis，Docker 部署。',
+  'http://8.155.149.208/lightdiary-web',
+  'https://github.com/zuodashen/lightdiary',
+  'Spring Boot,Vue 3,Vite,Tailwind,MyBatis-Plus,MySQL,Redis,Docker',
+  'LIVE', 1, 0, NOW(), NOW()
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM `blog_innovation` WHERE `slug` = 'lightdiary');
 
-INSERT INTO `ums_resource` (`create_time`, `name`, `url`, `description`, `category_id`) VALUES
-(NOW(), '文章管理', '/article/**', '博客文章管理', @blog_category_id),
-(NOW(), '分类管理', '/category/**', '博客分类管理', @blog_category_id),
-(NOW(), '标签管理', '/tag/**', '博客标签管理', @blog_category_id),
-(NOW(), '页面管理', '/page/**', '博客页面管理', @blog_category_id),
-(NOW(), '书签分类管理', '/bookmarkCategory/**', '书签分类管理', @blog_category_id),
-(NOW(), '书签管理', '/bookmark/**', '书签管理', @blog_category_id),
-(NOW(), '实验室管理', '/innovation/**', '微光实验室创新项目管理', @blog_category_id),
-(NOW(), '导航管理', '/navItem/**', '导航管理', @blog_category_id),
-(NOW(), '社交链接管理', '/socialLink/**', '社交链接管理', @blog_category_id),
-(NOW(), '站点设置管理', '/siteSetting/**', '站点设置管理', @blog_category_id),
-(NOW(), '评论管理', '/comment/**', '评论管理', @blog_category_id);
+-- 博客管理权限资源（幂等：依赖 ums_resource.url 唯一约束，勿单独再跑 migrate_innovation 等）
+INSERT INTO `ums_resource_category` (`create_time`, `name`, `sort`)
+SELECT NOW(), '博客模块', 0
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM `ums_resource_category` WHERE `name` = '博客模块');
 
--- 为超级管理员角色分配博客权限
+SET @blog_category_id = (SELECT id FROM `ums_resource_category` WHERE `name` = '博客模块' LIMIT 1);
+
+INSERT INTO `ums_resource` (`create_time`, `name`, `url`, `description`, `category_id`)
+SELECT NOW(), t.name, t.url, t.description, @blog_category_id
+FROM (
+  SELECT '文章管理' AS name, '/article/**' AS url, '博客文章管理' AS description UNION ALL
+  SELECT '分类管理', '/category/**', '博客分类管理' UNION ALL
+  SELECT '标签管理', '/tag/**', '博客标签管理' UNION ALL
+  SELECT '页面管理', '/page/**', '博客页面管理' UNION ALL
+  SELECT '书签分类管理', '/bookmarkCategory/**', '书签分类管理' UNION ALL
+  SELECT '书签管理', '/bookmark/**', '书签管理' UNION ALL
+  SELECT '实验室管理', '/innovation/**', '微光实验室创新项目管理' UNION ALL
+  SELECT '导航管理', '/navItem/**', '导航管理' UNION ALL
+  SELECT '社交链接管理', '/socialLink/**', '社交链接管理' UNION ALL
+  SELECT '站点设置管理', '/siteSetting/**', '站点设置管理' UNION ALL
+  SELECT '评论管理', '/comment/**', '评论管理'
+) t
+WHERE NOT EXISTS (SELECT 1 FROM `ums_resource` r WHERE r.url = t.url);
+
+-- 为超级管理员(role_id=5)分配博客权限
 INSERT INTO `ums_role_resource_relation` (`role_id`, `resource_id`)
-SELECT 5, id FROM `ums_resource` WHERE `category_id` = @blog_category_id;
+SELECT 5, r.id
+FROM `ums_resource` r
+WHERE r.category_id = @blog_category_id
+  AND NOT EXISTS (
+    SELECT 1 FROM `ums_role_resource_relation` rr
+    WHERE rr.role_id = 5 AND rr.resource_id = r.id
+  );
 
 SET FOREIGN_KEY_CHECKS = 1;
 
