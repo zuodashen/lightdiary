@@ -118,10 +118,17 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     public boolean publish(Long id) {
+        Article existing = getById(id);
+        if (existing == null) {
+            return false;
+        }
         Article article = new Article();
         article.setId(id);
         article.setStatus("PUBLISHED");
-        article.setPublishTime(new Date());
+        // 首次发布才写入发布时间，避免重复发布覆盖原始日期
+        if (existing.getPublishTime() == null) {
+            article.setPublishTime(new Date());
+        }
         article.setUpdateTime(new Date());
         return updateById(article);
     }

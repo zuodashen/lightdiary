@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
 import type { ArticleSummary } from '@/types'
-import { formatDateShort, formatReadingTime } from '@/utils/format'
+import { formatDateShort, formatReadingTime, wasUpdatedAfterPublish } from '@/utils/format'
 
 defineProps<{
   article: ArticleSummary
@@ -25,7 +25,10 @@ defineProps<{
           置顶
         </span>
         <span v-if="article.categoryName">{{ article.categoryName }}</span>
-        <span v-if="article.publishTime">· {{ formatDateShort(article.publishTime) }}</span>
+        <span v-if="article.publishTime">
+          · {{ wasUpdatedAfterPublish(article.publishTime, article.updateTime) ? '更新' : '发布' }}
+          {{ formatDateShort(wasUpdatedAfterPublish(article.publishTime, article.updateTime) ? article.updateTime : article.publishTime) }}
+        </span>
         <span v-if="article.views !== undefined">· {{ article.views }} 阅读</span>
         <span v-if="article.readingTime || article.summary">
           · {{ formatReadingTime(article.readingTime, article.summary) }}

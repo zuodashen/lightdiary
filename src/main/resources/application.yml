@@ -63,6 +63,10 @@ blog:
     cache-html: true
   comment:
     default-status: PENDING
+  guestbook:
+    default-status: APPROVED
+    daily-limit: 3
+    max-length: 500
 
 knife4j:
   enable: true

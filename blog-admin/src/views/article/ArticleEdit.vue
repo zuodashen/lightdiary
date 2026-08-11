@@ -18,6 +18,9 @@ const categories = ref<Category[]>([])
 const tags = ref<Tag[]>([])
 const loading = ref(false)
 const saving = ref(false)
+const meta = ref({ publishTime: '', updateTime: '', status: '' })
+
+const isPublished = computed(() => form.value.status === 'PUBLISHED')
 
 const form = ref<ArticleParam>({
   title: '',
@@ -41,6 +44,11 @@ onMounted(async () => {
 
     if (isEdit.value && articleId.value) {
       const article = await fetchArticle(articleId.value)
+      meta.value = {
+        publishTime: article.publishTime || '',
+        updateTime: article.updateTime || '',
+        status: article.status || 'DRAFT',
+      }
       form.value = {
         title: article.title,
         slug: article.slug,
@@ -75,6 +83,11 @@ function toggleTag(id: number) {
   }
 }
 
+function formatDateTime(value?: string) {
+  if (!value) return '-'
+  return new Date(value).toLocaleString('zh-CN')
+}
+
 async function handleSubmit(publish = false) {
   if (!form.value.title.trim()) {
     toast.error('请填写标题')
@@ -88,7 +101,9 @@ async function handleSubmit(publish = false) {
   try {
     if (isEdit.value && articleId.value) {
       await updateArticle(articleId.value, payload)
-      toast.success(publish ? '已保存并发布' : '保存成功')
+      toast.success(
+        publish || payload.status === 'PUBLISHED' ? '已保存，前台内容已更新' : '草稿已保存',
+      )
     } else {
       await createArticle(payload)
       toast.success(publish ? '创建并发布成功' : '创建成功')
@@ -113,6 +128,22 @@ async function handleSubmit(publish = false) {
     <div v-if="loading" class="text-sm text-gray-500">加载中...</div>
 
     <form v-else class="space-y-5" @submit.prevent="handleSubmit(false)">
+      <div v-if="isEdit && (meta.publishTime || meta.updateTime)" class="admin-card">
+        <div class="grid gap-3 text-sm sm:grid-cols-2">
+          <div>
+            <span class="text-gray-500">发布时间</span>
+            <p class="mt-1 text-gray-200">{{ formatDateTime(meta.publishTime) }}</p>
+          </div>
+          <div>
+            <span class="text-gray-500">最后更新</span>
+            <p class="mt-1 text-gray-200">{{ formatDateTime(meta.updateTime) }}</p>
+          </div>
+        </div>
+        <p v-if="isPublished" class="mt-3 text-xs text-gray-500">
+          已发布文章修改后点「保存」即可，无需再点「保存并发布」；发布时间保持不变，仅更新「最后更新」时间。
+        </p>
+      </div>
+
       <div class="admin-card space-y-4">
         <div>
           <label class="admin-label">标题 *</label>
@@ -207,7 +238,13 @@ async function handleSubmit(publish = false) {
         <button type="submit" class="btn-primary" :disabled="saving">
           {{ saving ? '保存中...' : '保存' }}
         </button>
-        <button type="button" class="btn-secondary" :disabled="saving" @click="handleSubmit(true)">
+        <button
+          v-if="!isPublished"
+          type="button"
+          class="btn-secondary"
+          :disabled="saving"
+          @click="handleSubmit(true)"
+        >
           保存并发布
         </button>
         <router-link to="/articles" class="btn-ghost">取消</router-link>

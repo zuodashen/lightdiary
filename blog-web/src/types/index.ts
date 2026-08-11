@@ -35,13 +35,13 @@ export interface ArticleSummary {
   isTop?: boolean
   publishTime?: string
   createTime?: string
+  updateTime?: string
 }
 
 export interface ArticleDetail extends ArticleSummary {
   content?: string
   contentHtml?: string
   allowComment?: boolean
-  updateTime?: string
 }
 
 export interface Category {
@@ -162,6 +162,26 @@ export interface SiteStats {
   categoryCount: number
   tagCount: number
   runningDays: number
+  messageCount?: number
+}
+
+export interface GuestbookMessage {
+  id: number
+  parentId?: number
+  authorName: string
+  authorEmail?: string
+  authorAvatar?: string
+  content: string
+  likes?: number
+  createTime?: string
+  children?: GuestbookMessage[]
+}
+
+export interface GuestbookParam {
+  authorName: string
+  authorEmail?: string
+  content: string
+  parentId?: number
 }
 
 export interface ArticleQuery {

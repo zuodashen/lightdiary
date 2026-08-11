@@ -7,7 +7,7 @@ import Loading from '@/components/common/Loading.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
 import { useSiteStore } from '@/stores/site'
 import type { ArticleDetail } from '@/types'
-import { formatDate, formatCompactNumber, formatReadingTime } from '@/utils/format'
+import { formatDate, formatCompactNumber, formatReadingTime, wasUpdatedAfterPublish, formatDateShort } from '@/utils/format'
 
 const route = useRoute()
 const siteStore = useSiteStore()
@@ -56,7 +56,12 @@ onMounted(loadArticle)
           >
             {{ article.categoryName }}
           </RouterLink>
-          <span v-if="article.publishTime">{{ formatDate(article.publishTime) }}</span>
+          <span v-if="article.publishTime">发布于 {{ formatDate(article.publishTime) }}</span>
+          <span
+            v-if="wasUpdatedAfterPublish(article.publishTime, article.updateTime)"
+          >
+            · 更新于 {{ formatDateShort(article.updateTime) }}
+          </span>
           <span v-if="article.views !== undefined">· {{ article.views }} 阅读</span>
           <span v-if="article.wordCount">· {{ formatCompactNumber(article.wordCount) }} 字</span>
           <span v-if="formatReadingTime(article.readingTime, article.content)">

@@ -412,6 +412,34 @@
       transparent 65%
     );
   }
+
+  .section-heading {
+    @apply relative;
+  }
+
+  .section-eyebrow {
+    @apply mb-2 text-xs font-semibold tracking-[0.2em] uppercase;
+    color: var(--color-muted);
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-full border px-5 py-2.5 text-sm font-medium transition-all duration-300;
+  }
+
+  .dark .btn-outline {
+    @apply border-white/15 text-gray-200;
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .dark .btn-outline:hover {
+    @apply border-primary/40;
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .light .btn-outline {
+    @apply border-black/10 text-gray-700;
+    background: rgba(255, 255, 255, 0.7);
+  }
 }
 
 @keyframes ambient-drift {

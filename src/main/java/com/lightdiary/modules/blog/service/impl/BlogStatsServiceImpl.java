@@ -6,6 +6,7 @@ import com.lightdiary.modules.blog.mapper.ArticleMapper;
 import com.lightdiary.modules.blog.model.Article;
 import com.lightdiary.modules.blog.service.BlogStatsService;
 import com.lightdiary.modules.blog.service.CategoryService;
+import com.lightdiary.modules.blog.service.GuestbookService;
 import com.lightdiary.modules.blog.service.SiteSettingService;
 import com.lightdiary.modules.blog.service.TagService;
 import com.lightdiary.modules.blog.vo.SiteStatsVO;
@@ -34,6 +35,8 @@ public class BlogStatsServiceImpl implements BlogStatsService {
     private SiteSettingService siteSettingService;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private GuestbookService guestbookService;
 
     @Override
     public SiteStatsVO getSiteStats() {
@@ -44,6 +47,7 @@ public class BlogStatsServiceImpl implements BlogStatsService {
         stats.setTagCount(tagService.listWithCount().size());
         stats.setTotalViews(calculateTotalViews());
         stats.setRunningDays(calculateRunningDays());
+        stats.setMessageCount(guestbookService.countApproved());
         return stats;
     }
 

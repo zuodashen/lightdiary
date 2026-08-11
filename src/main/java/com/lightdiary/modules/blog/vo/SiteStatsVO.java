@@ -10,4 +10,5 @@ public class SiteStatsVO {
     private Integer categoryCount;
     private Integer tagCount;
     private Long runningDays;
+    private Long messageCount;
 }

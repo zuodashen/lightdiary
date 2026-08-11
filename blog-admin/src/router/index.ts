@@ -110,6 +110,12 @@ const router = createRouter({
           meta: { title: '评论管理' },
         },
         {
+          path: 'guestbook',
+          name: 'guestbook',
+          component: () => import('@/views/guestbook/GuestbookList.vue'),
+          meta: { title: '留言板管理' },
+        },
+        {
           path: 'comments/settings',
           name: 'comments-settings',
           component: () => import('@/views/comment/CommentSettings.vue'),

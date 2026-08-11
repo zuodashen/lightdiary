@@ -30,6 +30,7 @@ const groups: NavGroup[] = [
       { label: '实验室', to: '/innovations', icon: '⚗️' },
       { label: '页面', to: '/pages', icon: '📄' },
       { label: '评论', to: '/comments', icon: '💬' },
+      { label: '留言板', to: '/guestbook', icon: '📝' },
     ],
   },
   {
@@ -55,6 +56,7 @@ function isActive(path: string) {
   if (path === '/articles') return route.path.startsWith('/articles')
   if (path === '/pages') return route.path.startsWith('/pages')
   if (path === '/comments') return route.path.startsWith('/comments')
+  if (path === '/guestbook') return route.path.startsWith('/guestbook')
   if (path === '/system/admins') return route.path.startsWith('/system/admins')
   if (path === '/system/roles') return route.path.startsWith('/system/roles')
   if (path === '/system/menus') return route.path.startsWith('/system/menus')

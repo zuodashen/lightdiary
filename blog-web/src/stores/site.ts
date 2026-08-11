@@ -32,6 +32,18 @@ export const useSiteStore = defineStore('site', () => {
   const colorSecondary = computed(
     () => settings.value.color_secondary || '#0153E5',
   )
+  const bannerTitle = computed(
+    () => settings.value.banner_title || siteTitle.value,
+  )
+  const bannerSubtitle = computed(
+    () => settings.value.banner_subtitle || siteDescription.value,
+  )
+  const bannerImage = computed(() => settings.value.banner_image || '')
+  const siteAvatar = computed(() => settings.value.site_avatar || '')
+  const aboutTechStack = computed(() => {
+    const raw = settings.value.about_tech_stack || ''
+    return raw.split(/[,，]/).map((s) => s.trim()).filter(Boolean)
+  })
 
   async function init() {
     if (initialized.value) return
@@ -84,6 +96,11 @@ export const useSiteStore = defineStore('site', () => {
     sidebarAnnouncement,
     colorPrimary,
     colorSecondary,
+    bannerTitle,
+    bannerSubtitle,
+    bannerImage,
+    siteAvatar,
+    aboutTechStack,
     init,
   }
 })

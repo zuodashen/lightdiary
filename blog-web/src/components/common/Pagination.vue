@@ -5,6 +5,7 @@ const props = defineProps<{
   pageNum: number
   totalPage: number
   total?: number
+  unit?: string
 }>()
 
 const emit = defineEmits<{
@@ -73,7 +74,7 @@ function goTo(page: number) {
     </button>
 
     <span v-if="total !== undefined" class="ml-2 text-xs text-muted">
-      共 {{ total }} 篇
+      共 {{ total }} {{ unit ?? '篇' }}
     </span>
   </nav>
 </template>

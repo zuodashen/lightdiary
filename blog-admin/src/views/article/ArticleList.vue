@@ -166,13 +166,14 @@ function changePage(page: number) {
             <th>状态</th>
             <th>置顶</th>
             <th>浏览</th>
+            <th>发布时间</th>
             <th>更新时间</th>
             <th class="text-right">操作</th>
           </tr>
         </thead>
         <tbody>
           <tr v-if="articles.length === 0">
-            <td colspan="7" class="py-10 text-center text-gray-500">暂无文章</td>
+            <td colspan="8" class="py-10 text-center text-gray-500">暂无文章</td>
           </tr>
           <tr v-for="article in articles" :key="article.id">
             <td>
@@ -192,6 +193,9 @@ function changePage(page: number) {
               <span v-else class="text-gray-600">-</span>
             </td>
             <td>{{ article.views ?? 0 }}</td>
+            <td class="whitespace-nowrap text-xs text-gray-400">
+              {{ formatDate(article.publishTime) }}
+            </td>
             <td class="whitespace-nowrap text-xs text-gray-400">
               {{ formatDate(article.updateTime || article.createTime) }}
             </td>

@@ -174,6 +174,25 @@ CREATE TABLE `blog_comment_config` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='评论系统配置表';
 
+-- 留言板表
+DROP TABLE IF EXISTS `blog_guestbook`;
+CREATE TABLE `blog_guestbook` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `parent_id` bigint(20) NOT NULL DEFAULT 0 COMMENT '父留言ID（0为顶级）',
+  `author_name` varchar(100) NOT NULL COMMENT '昵称',
+  `author_email` varchar(255) DEFAULT NULL COMMENT '邮箱',
+  `author_avatar` varchar(500) DEFAULT NULL COMMENT '头像',
+  `content` varchar(500) NOT NULL COMMENT '留言内容',
+  `likes` int(11) NOT NULL DEFAULT 0 COMMENT '点赞数',
+  `status` varchar(20) NOT NULL DEFAULT 'APPROVED' COMMENT 'PENDING/APPROVED/SPAM',
+  `ip_address` varchar(50) DEFAULT NULL COMMENT 'IP',
+  `user_agent` varchar(500) DEFAULT NULL COMMENT 'UA',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_status` (`status`),
+  KEY `idx_create_time` (`create_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='留言板';
+
 -- 微光实验室（创新项目）
 DROP TABLE IF EXISTS `blog_innovation`;
 CREATE TABLE `blog_innovation` (
@@ -216,7 +235,8 @@ INSERT INTO `blog_site_setting` (`setting_key`, `setting_value`, `description`) 
 ('site_start_time', '2026-07-05 10:10:10', '建站时间'),
 ('banner_title', '微光博客', '首页Banner标题'),
 ('banner_subtitle', '一个分享知识与技术的微光博客', '首页Banner副标题'),
-('banner_image', '/images/bg.avif', '首页Banner图片');
+('banner_image', '/images/bg.avif', '首页Banner图片'),
+('about_tech_stack', 'Java,Spring Boot,MySQL,Redis,Vue 3,Docker,Linux,Git', '关于页技术栈（逗号分隔）');
 
 INSERT INTO `blog_nav_item` (`name`, `path`, `icon`, `parent_id`, `sort_order`, `is_external`) VALUES
 ('首页', '/', 'fa-solid fa-house', 0, 1, 0),
@@ -224,8 +244,9 @@ INSERT INTO `blog_nav_item` (`name`, `path`, `icon`, `parent_id`, `sort_order`, 
 ('分类', '/categories', 'fa-solid fa-folder', 0, 3, 0),
 ('标签', '/tags', 'fa-solid fa-tags', 0, 4, 0),
 ('书签', '/bookmarks', 'fa-solid fa-bookmark', 0, 5, 0),
-('实验室', '/lab', 'fa-solid fa-flask', 0, 6, 0),
-('关于', '/about', 'fa-solid fa-user', 0, 7, 0);
+('留言板', '/guestbook', 'fa-solid fa-comments', 0, 6, 0),
+('实验室', '/lab', 'fa-solid fa-flask', 0, 7, 0),
+('关于', '/about', 'fa-solid fa-user', 0, 8, 0);
 
 INSERT INTO `blog_social_link` (`platform`, `icon`, `url`, `sort_order`) VALUES
 ('GitHub', 'github', 'https://github.com/zuodashen/lightdiary', 1),
@@ -271,7 +292,8 @@ FROM (
   SELECT '导航管理', '/navItem/**', '导航管理' UNION ALL
   SELECT '社交链接管理', '/socialLink/**', '社交链接管理' UNION ALL
   SELECT '站点设置管理', '/siteSetting/**', '站点设置管理' UNION ALL
-  SELECT '评论管理', '/comment/**', '评论管理'
+  SELECT '评论管理', '/comment/**', '评论管理' UNION ALL
+  SELECT '留言板管理', '/guestbook/**', '留言板管理'
 ) t
 WHERE NOT EXISTS (SELECT 1 FROM `ums_resource` r WHERE r.url = t.url);
 

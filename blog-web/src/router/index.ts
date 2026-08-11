@@ -62,6 +62,12 @@ const router = createRouter({
       meta: { title: '实验室' },
     },
     {
+      path: '/guestbook',
+      name: 'guestbook',
+      component: () => import('@/views/GuestbookView.vue'),
+      meta: { title: '留言板' },
+    },
+    {
       path: '/about',
       name: 'about',
       component: () => import('@/views/AboutView.vue'),

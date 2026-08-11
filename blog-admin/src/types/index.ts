@@ -224,6 +224,19 @@ export interface Comment {
   createTime?: string
 }
 
+export interface GuestbookMessage {
+  id: number
+  parentId?: number
+  authorName: string
+  authorEmail?: string
+  authorAvatar?: string
+  content: string
+  likes?: number
+  status: string
+  ipAddress?: string
+  createTime?: string
+}
+
 export interface CommentConfig {
   id?: number
   system: string

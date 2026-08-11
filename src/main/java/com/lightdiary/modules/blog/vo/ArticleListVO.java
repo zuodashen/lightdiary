@@ -21,4 +21,5 @@ public class ArticleListVO {
     private Integer isTop;
     private Date publishTime;
     private Date createTime;
+    private Date updateTime;
 }
