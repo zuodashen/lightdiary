@@ -13,7 +13,7 @@ const isFullBleed = computed(() => route.path === '/' || route.path === '/guestb
 </script>
 
 <template>
-  <div class="flex min-h-screen flex-col">
+  <div class="flex min-h-screen flex-col" :class="{ 'home-bleed': isFullBleed && route.path === '/' }">
     <div class="ambient-bg" aria-hidden="true" />
     <AppHeader />
     <main class="flex-1" :class="isFullBleed ? 'pb-8' : 'py-8'">

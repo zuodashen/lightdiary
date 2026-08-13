@@ -27,6 +27,9 @@ const total = ref(0)
 const loading = ref(true)
 const loadingLab = ref(true)
 
+/** 暂时隐藏首页「关于我 / 技术栈」板块 */
+const showAboutSection = false
+
 async function loadArticles() {
   loading.value = true
   try {
@@ -94,83 +97,124 @@ onMounted(async () => {
 
 <template>
   <div class="home-page">
+    <!-- 整页氛围背景：一直铺到内容区，避免 Hero 处硬切 -->
+    <div
+      class="home-atmosphere"
+      :style="siteStore.bannerImage ? { backgroundImage: `url(${siteStore.bannerImage})` } : undefined"
+      aria-hidden="true"
+    >
+      <div v-if="!siteStore.bannerImage" class="hero-scene">
+        <div class="hero-stars" />
+        <div class="hero-mountains" />
+        <div class="hero-portal">
+          <div class="portal-ring portal-ring-1" />
+          <div class="portal-ring portal-ring-2" />
+          <div class="portal-core" />
+          <div class="portal-silhouette" />
+        </div>
+      </div>
+      <div class="home-atmosphere-fade" />
+    </div>
+
     <!-- Hero -->
     <section class="home-hero">
-      <div
-        class="home-hero-bg"
-        :style="siteStore.bannerImage ? { backgroundImage: `url(${siteStore.bannerImage})` } : undefined"
-        aria-hidden="true"
-      />
-      <div class="home-hero-overlay" aria-hidden="true" />
-      <div class="container-blog relative flex min-h-[70vh] flex-col items-center justify-center py-20 text-center">
-        <h1 class="mb-2 text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
-          <span class="gradient-text">{{ siteStore.bannerTitle }}</span>
+      <div class="container-blog relative z-10 flex min-h-[58vh] flex-col items-center justify-center py-12 text-center lg:min-h-[62vh] lg:py-16">
+        <h1 class="hero-title gradient-text">
+          {{ siteStore.bannerTitle || siteStore.siteTitle }}
         </h1>
-        <p
-          v-if="siteStore.bannerSubtitle"
-          class="mx-auto max-w-2xl text-base leading-relaxed text-muted sm:text-lg"
-        >
-          {{ siteStore.bannerSubtitle }}
+        <div class="hero-subtitle-row">
+          <span class="hero-line" />
+          <span class="hero-subtitle-text">{{ siteStore.siteSubtitle || '微光日记' }}</span>
+          <span class="hero-line" />
+        </div>
+        <p class="hero-tagline mx-auto mt-5 max-w-xl text-base leading-relaxed sm:text-lg">
+          {{ siteStore.bannerSubtitle || '记录技术，也记录生活\n让一些微小的想法持续发光' }}
         </p>
 
         <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
           <button type="button" class="btn-primary gap-2" @click="scrollToRecent">
             <span>开始阅读</span>
-            <span aria-hidden="true">📖</span>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M4 19.5A2.5 2.5 0 016.5 17H20"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8 7h8M8 11h5"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+              />
+            </svg>
           </button>
           <RouterLink to="/lab" class="btn-outline gap-2">
             <span>探索实验室</span>
-            <span aria-hidden="true">⚗️</span>
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path
+                d="M9 3h6M10 3v5.2L5.4 18.1A2.2 2.2 0 007.4 21h9.2a2.2 2.2 0 002-2.9L14 8.2V3"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8.2 14h7.6"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+              />
+            </svg>
           </RouterLink>
         </div>
-
-        <button
-          type="button"
-          class="scroll-hint mt-12"
-          aria-label="向下滚动"
-          @click="scrollToRecent"
-        >
-          <span class="scroll-mouse" />
-        </button>
       </div>
-    </section>
 
-    <!-- Stats -->
-    <section class="container-blog -mt-6 mb-12">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <span class="stat-card-icon">👀</span>
-          <div class="stat-card-value">
-            {{ stats ? formatCompactNumber(stats.totalViews) : '-' }}
+      <!-- Stats：玻璃卡片浮在氛围上 -->
+      <div class="container-blog relative z-10 pb-8">
+        <div class="stats-grid stats-grid-hero">
+          <div class="stat-card">
+            <span class="stat-card-icon">👀</span>
+            <div class="stat-card-value">
+              {{ stats ? formatCompactNumber(stats.totalViews) : '-' }}
+            </div>
+            <div class="stat-card-label">访问量</div>
           </div>
-          <div class="stat-card-label">访问量</div>
-        </div>
-        <RouterLink to="/guestbook" class="stat-card stat-card-link">
-          <span class="stat-card-icon">💬</span>
-          <div class="stat-card-value">
-            {{ stats ? formatCompactNumber(stats.messageCount ?? 0) : '-' }}
+          <RouterLink to="/guestbook" class="stat-card stat-card-link">
+            <span class="stat-card-icon">💬</span>
+            <div class="stat-card-value">
+              {{ stats ? formatCompactNumber(stats.messageCount ?? 0) : '-' }}
+            </div>
+            <div class="stat-card-label">留言数</div>
+          </RouterLink>
+          <div class="stat-card">
+            <span class="stat-card-icon">🌱</span>
+            <div class="stat-card-value">
+              {{ stats ? `${stats.runningDays} 天` : '-' }}
+            </div>
+            <div class="stat-card-label">运行时间</div>
           </div>
-          <div class="stat-card-label">留言数</div>
-        </RouterLink>
-        <div class="stat-card">
-          <span class="stat-card-icon">🌱</span>
-          <div class="stat-card-value">
-            {{ stats ? `${stats.runningDays} 天` : '-' }}
+          <div class="stat-card">
+            <span class="stat-card-icon">📅</span>
+            <div class="stat-card-value stat-card-value-sm">
+              {{ formatSiteStartDate(siteStore.siteStartTime) }}
+            </div>
+            <div class="stat-card-label">建站时间</div>
           </div>
-          <div class="stat-card-label">运行时间</div>
-        </div>
-        <div class="stat-card">
-          <span class="stat-card-icon">📅</span>
-          <div class="stat-card-value stat-card-value-sm">
-            {{ formatSiteStartDate(siteStore.siteStartTime) }}
-          </div>
-          <div class="stat-card-label">建站时间</div>
         </div>
       </div>
     </section>
 
     <!-- Recent articles -->
-    <section id="recent" class="container-blog mb-16 scroll-mt-24">
+    <section id="recent" class="home-panel container-blog relative z-10 mb-16 scroll-mt-24">
       <div class="section-heading mb-8">
         <p class="section-eyebrow">Recent Updates</p>
         <h2 class="text-2xl font-bold sm:text-3xl">
@@ -191,6 +235,7 @@ onMounted(async () => {
               v-for="article in articles"
               :key="article.id"
               :article="article"
+              layout="horizontal"
             />
           </div>
           <Pagination
@@ -246,14 +291,34 @@ onMounted(async () => {
           :key="item.id"
           class="card card-hover lab-preview-card overflow-hidden"
         >
-          <div class="lab-preview-cover flex h-24 items-center justify-center text-3xl">
-            ⚗️
+          <div class="lab-preview-cover">
+            <img
+              v-if="item.coverImage"
+              :src="item.coverImage"
+              :alt="item.title"
+              class="h-full w-full object-cover"
+              loading="lazy"
+            />
+            <div v-else class="lab-preview-placeholder">⚗️</div>
           </div>
           <div class="p-5">
             <div class="mb-3 flex items-center justify-between gap-2">
               <span :class="['status-pill', statusMeta[item.status || 'BUILDING']?.class]">
                 {{ statusMeta[item.status || 'BUILDING']?.label }}
               </span>
+              <div v-if="item.githubUrl || item.demoUrl" class="flex gap-2">
+                <a
+                  v-if="item.githubUrl"
+                  :href="item.githubUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="lab-link-icon"
+                  title="GitHub"
+                  @click.stop
+                >
+                  ↗
+                </a>
+              </div>
             </div>
             <h3 class="mb-2 font-semibold dark:text-gray-100 light:text-gray-900">
               {{ item.title }}
@@ -261,22 +326,42 @@ onMounted(async () => {
             <p v-if="item.summary" class="mb-4 line-clamp-2 text-sm text-muted">
               {{ item.summary }}
             </p>
-            <div v-if="techTags(item.techStack).length" class="flex flex-wrap gap-1.5">
+            <div v-if="techTags(item.techStack).length" class="mb-4 flex flex-wrap gap-1.5">
               <span
-                v-for="tag in techTags(item.techStack).slice(0, 3)"
+                v-for="tag in techTags(item.techStack).slice(0, 4)"
                 :key="tag"
                 class="tag-pill text-xs"
               >
                 {{ tag }}
               </span>
             </div>
+            <div v-if="item.demoUrl || item.githubUrl" class="flex flex-wrap gap-3 text-xs">
+              <a
+                v-if="item.demoUrl"
+                :href="item.demoUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="lab-action"
+              >
+                Demo →
+              </a>
+              <a
+                v-if="item.githubUrl"
+                :href="item.githubUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="lab-action"
+              >
+                GitHub →
+              </a>
+            </div>
           </div>
         </article>
       </div>
     </section>
 
-    <!-- About -->
-    <section class="container-blog mb-8">
+    <!-- About（暂时隐藏） -->
+    <section v-if="showAboutSection" class="container-blog mb-8">
       <div class="about-section card overflow-hidden">
         <div class="about-section-glow" aria-hidden="true" />
         <div class="relative grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_1.2fr] lg:items-center">
@@ -348,54 +433,229 @@ onMounted(async () => {
 }
 
 .home-page {
-  margin-top: -0.75rem;
+  position: relative;
+  /* 把氛围背景拉到视口最顶，盖住顶栏背后的黑边 */
+  margin-top: calc(-1 * var(--home-header-offset, 4.75rem));
+}
+
+/* 整页氛围：高度盖住 Hero + 最近更新，内容玻璃浮在上面 */
+.home-atmosphere {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: min(135vh, 1180px);
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background-color: #06060a;
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+.home-atmosphere:not([style*='background-image']) {
+  background-image:
+    radial-gradient(ellipse 90% 70% at 50% 28%, rgba(117, 9, 182, 0.38) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 18% 8%, rgba(1, 83, 229, 0.22) 0%, transparent 50%),
+    linear-gradient(180deg, #06060a 0%, #0c0618 40%, #06060a 100%);
+}
+
+.home-atmosphere-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(6, 6, 10, 0.12) 0%,
+    rgba(6, 6, 10, 0.05) 22%,
+    rgba(6, 6, 10, 0.28) 48%,
+    rgba(6, 6, 10, 0.72) 72%,
+    rgba(6, 6, 10, 0.94) 88%,
+    #06060a 100%
+  );
 }
 
 .home-hero {
   position: relative;
+  z-index: 1;
+  padding-top: var(--home-header-offset, 4.75rem);
+}
+
+.home-panel {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-scene {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
+  pointer-events: none;
 }
 
-.home-hero-bg {
+.hero-stars {
   position: absolute;
   inset: 0;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  background-image:
+    radial-gradient(1.5px 1.5px at 12% 18%, rgba(255, 255, 255, 0.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 28% 42%, rgba(255, 255, 255, 0.45) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 48% 12%, rgba(255, 255, 255, 0.55) 0%, transparent 100%),
+    radial-gradient(1px 1px at 68% 28%, rgba(255, 255, 255, 0.4) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 82% 16%, rgba(255, 255, 255, 0.65) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 48%, rgba(255, 255, 255, 0.35) 0%, transparent 100%),
+    radial-gradient(1px 1px at 8% 62%, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+  animation: stars-twinkle 6s ease-in-out infinite alternate;
 }
 
-.home-hero-bg:not([style*='background-image']) {
+@keyframes stars-twinkle {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
+}
+
+.hero-mountains {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 42%;
   background:
-    radial-gradient(
-      ellipse 80% 60% at 30% 0%,
-      color-mix(in srgb, var(--color-secondary) 28%, transparent) 0%,
-      transparent 70%
-    ),
-    radial-gradient(
-      ellipse 70% 55% at 70% 10%,
-      color-mix(in srgb, var(--color-primary) 22%, transparent) 0%,
-      transparent 65%
-    );
+    linear-gradient(180deg, transparent 0%, rgba(20, 8, 40, 0.85) 40%, #0a0614 100%),
+    radial-gradient(ellipse 120% 80% at 50% 100%, #1a0a2e 0%, transparent 70%);
+  clip-path: polygon(
+    0% 100%, 0% 55%, 8% 48%, 18% 58%, 28% 42%, 38% 52%, 48% 35%,
+    58% 48%, 68% 38%, 78% 55%, 88% 45%, 100% 58%, 100% 100%
+  );
 }
 
-.home-hero-overlay {
+.hero-portal {
+  position: absolute;
+  left: 50%;
+  bottom: 18%;
+  transform: translateX(-50%);
+  width: min(42vw, 280px);
+  height: min(52vw, 340px);
+}
+
+.portal-ring {
   position: absolute;
   inset: 0;
+  border-radius: 50% 50% 45% 45% / 55% 55% 40% 40%;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(#06060a, #06060a) padding-box,
+    linear-gradient(180deg, #c084fc, #7509b6, #0153e5) border-box;
+  box-shadow:
+    0 0 40px rgba(117, 9, 182, 0.55),
+    0 0 80px rgba(117, 9, 182, 0.25),
+    inset 0 0 40px rgba(192, 132, 252, 0.25);
+  animation: portal-glow 4s ease-in-out infinite alternate;
+}
+
+.portal-ring-1 {
+  transform: scale(1);
+}
+
+.portal-ring-2 {
+  inset: 8%;
+  opacity: 0.7;
+  animation-delay: 0.6s;
+}
+
+.portal-core {
+  position: absolute;
+  inset: 18%;
+  border-radius: 50% 50% 45% 45% / 55% 55% 40% 40%;
+  background:
+    radial-gradient(circle at 50% 40%, rgba(251, 207, 232, 0.9) 0%, rgba(192, 132, 252, 0.55) 35%, rgba(117, 9, 182, 0.2) 70%, transparent 100%);
+  filter: blur(2px);
+}
+
+.portal-silhouette {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 36px;
+  background: #050508;
+  border-radius: 40% 40% 30% 30%;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+}
+
+.portal-silhouette::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #050508;
+}
+
+@keyframes portal-glow {
+  from {
+    box-shadow:
+      0 0 30px rgba(117, 9, 182, 0.4),
+      0 0 60px rgba(117, 9, 182, 0.2),
+      inset 0 0 30px rgba(192, 132, 252, 0.2);
+  }
+  to {
+    box-shadow:
+      0 0 50px rgba(117, 9, 182, 0.7),
+      0 0 100px rgba(168, 85, 247, 0.35),
+      inset 0 0 50px rgba(192, 132, 252, 0.35);
+  }
+}
+
+.hero-title {
+  font-size: clamp(2.75rem, 8vw, 5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  text-shadow: 0 0 60px rgba(117, 9, 182, 0.35);
+}
+
+.hero-subtitle-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.hero-line {
+  display: block;
+  width: 2.5rem;
+  height: 1px;
   background: linear-gradient(
-    to bottom,
-    rgba(6, 6, 10, 0.35) 0%,
-    rgba(6, 6, 10, 0.75) 70%,
-    rgba(6, 6, 10, 1) 100%
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-primary) 70%, white)
   );
 }
 
-.light .home-hero-overlay {
+.hero-line:last-child {
   background: linear-gradient(
-    to bottom,
-    rgba(244, 246, 251, 0.2) 0%,
-    rgba(244, 246, 251, 0.85) 70%,
-    rgba(244, 246, 251, 1) 100%
+    90deg,
+    color-mix(in srgb, var(--color-primary) 70%, white),
+    transparent
   );
+}
+
+.hero-subtitle-text {
+  font-size: 1rem;
+  letter-spacing: 0.35em;
+  color: color-mix(in srgb, var(--color-primary) 60%, white);
+}
+
+.hero-tagline {
+  white-space: pre-line;
+  color: rgba(229, 231, 235, 0.78);
+}
+
+.light .hero-tagline {
+  color: #4b5563;
 }
 
 .btn-outline {
@@ -408,6 +668,13 @@ onMounted(async () => {
   font-size: 0.875rem;
   font-weight: 500;
   transition: all 0.3s;
+}
+
+.btn-icon {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex-shrink: 0;
+  opacity: 0.95;
 }
 
 .dark .btn-outline {
@@ -479,21 +746,44 @@ onMounted(async () => {
 .stat-card {
   border-radius: 1rem;
   border-width: 1px;
-  padding: 1.25rem 1rem;
+  padding: 1.125rem 1rem;
   text-align: center;
   transition: all 0.3s;
 }
 
 .dark .stat-card {
-  border-color: rgba(255, 255, 255, 0.08);
-  background: rgba(20, 20, 24, 0.8);
-  backdrop-filter: blur(12px);
+  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(18, 18, 28, 0.45);
+  backdrop-filter: blur(18px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .light .stat-card {
   border-color: rgba(0, 0, 0, 0.06);
-  background: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.72);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(12px);
+}
+
+/* 首页内容卡片：更透，浮在氛围上 */
+.home-page :deep(.card) {
+  background: rgba(16, 16, 24, 0.48);
+  backdrop-filter: blur(16px);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.light .home-page :deep(.card) {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.guestbook-cta,
+.lab-preview-card,
+.about-section {
+  position: relative;
+  z-index: 1;
 }
 
 .stat-card-link {
@@ -583,11 +873,52 @@ onMounted(async () => {
 }
 
 .lab-preview-cover {
+  height: 8.5rem;
+  overflow: hidden;
   background: linear-gradient(
     135deg,
     color-mix(in srgb, var(--color-secondary) 12%, transparent),
     color-mix(in srgb, var(--color-primary) 12%, transparent)
   );
+}
+
+.lab-preview-placeholder {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.lab-link-icon {
+  display: inline-flex;
+  height: 1.75rem;
+  width: 1.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+}
+
+.dark .lab-link-icon {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #9ca3af;
+}
+
+.dark .lab-link-icon:hover {
+  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  color: var(--color-primary);
+}
+
+.lab-action {
+  color: var(--color-primary);
+  transition: opacity 0.2s;
+}
+
+.lab-action:hover {
+  opacity: 0.8;
+  text-decoration: underline;
 }
 
 .line-clamp-2 {

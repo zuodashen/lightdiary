@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { fetchPageBySlug } from '@/api/page'
 import Loading from '@/components/common/Loading.vue'
+import { useMermaid } from '@/composables/useMermaid'
 import { useSiteStore } from '@/stores/site'
 import type { PageContent } from '@/types'
 
 const siteStore = useSiteStore()
 const page = ref<PageContent | null>(null)
 const loading = ref(true)
+const contentRef = ref<HTMLElement | null>(null)
 
 const fallbackLines = [
   '记录思考，沉淀时光。',
@@ -18,6 +20,12 @@ const fallbackLines = [
 const hasCmsContent = computed(
   () => Boolean(page.value?.contentHtml?.trim() || page.value?.content?.trim()),
 )
+
+const mermaidEnabled = computed(() => !loading.value && hasCmsContent.value)
+const mermaidContentKey = computed(
+  () => page.value?.contentHtml || page.value?.content || '',
+)
+useMermaid(contentRef, mermaidEnabled, mermaidContentKey)
 
 onMounted(async () => {
   try {
@@ -31,6 +39,7 @@ onMounted(async () => {
     document.title = `关于 · ${siteStore.siteTitle}`
   } finally {
     loading.value = false
+    await nextTick()
   }
 })
 </script>
@@ -51,6 +60,7 @@ onMounted(async () => {
 
         <div
           v-if="hasCmsContent"
+          ref="contentRef"
           class="prose-blog text-left"
           v-html="page!.contentHtml || page!.content"
         />

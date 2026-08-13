@@ -54,7 +54,8 @@ FROM (
   SELECT '导航管理', '/navItem/**', '导航管理' UNION ALL
   SELECT '社交链接管理', '/socialLink/**', '社交链接管理' UNION ALL
   SELECT '站点设置管理', '/siteSetting/**', '站点设置管理' UNION ALL
-  SELECT '评论管理', '/comment/**', '评论管理'
+  SELECT '评论管理', '/comment/**', '评论管理' UNION ALL
+  SELECT '留言板管理', '/guestbook/**', '留言板管理'
 ) t
 WHERE NOT EXISTS (SELECT 1 FROM ums_resource r WHERE r.url = t.url);
 

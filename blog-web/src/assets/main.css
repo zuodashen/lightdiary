@@ -144,6 +144,17 @@
     @apply bg-transparent;
   }
 
+  .dark .header-transparent {
+    background: transparent;
+    border-bottom: none;
+    box-shadow: none;
+  }
+
+  /* 首页：顶栏高度，供 Hero 向上拉满视口 */
+  .home-bleed {
+    --home-header-offset: 4.75rem;
+  }
+
   .dark .header-scrolled {
     @apply border-b border-white/5 bg-[#06060a]/60 backdrop-blur-md;
   }
@@ -377,6 +388,23 @@
 
   .prose-blog pre code {
     @apply bg-transparent p-0 text-inherit;
+  }
+
+  /* Mermaid 流程图（由前端把 language-mermaid 代码块渲染成 SVG） */
+  .prose-blog .mermaid-diagram {
+    @apply my-8 overflow-x-auto rounded-2xl border p-4;
+  }
+
+  .dark .prose-blog .mermaid-diagram {
+    @apply border-white/10 bg-[#0d1117]/80;
+  }
+
+  .light .prose-blog .mermaid-diagram {
+    @apply border-black/8 bg-white;
+  }
+
+  .prose-blog .mermaid-diagram svg {
+    @apply mx-auto max-w-full h-auto;
   }
 
   .prose-blog hr {

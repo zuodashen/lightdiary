@@ -143,16 +143,16 @@ onMounted(async () => {
           :key="item.id"
           class="card card-hover lab-card overflow-hidden"
         >
-          <div v-if="item.coverImage" class="h-36 overflow-hidden">
+          <div v-if="item.coverImage" class="h-36 shrink-0 overflow-hidden">
             <img :src="item.coverImage" :alt="item.title" class="h-full w-full object-cover" loading="lazy" />
           </div>
           <div
             v-else
-            class="lab-card-cover flex h-28 items-center justify-center text-4xl"
+            class="lab-card-cover flex h-28 shrink-0 items-center justify-center text-4xl"
           >
             ⚗️
           </div>
-          <div class="p-5">
+          <div class="lab-card-body">
             <div class="mb-3 flex items-center justify-between gap-2">
               <span :class="['status-pill', statusMeta[item.status || 'BUILDING']?.class]">
                 {{ statusMeta[item.status || 'BUILDING']?.label }}
@@ -165,34 +165,38 @@ onMounted(async () => {
             <p v-if="item.summary" class="mb-4 line-clamp-2 text-sm text-muted">
               {{ item.summary }}
             </p>
-            <div v-if="techTags(item.techStack).length" class="mb-4 flex flex-wrap gap-1.5">
-              <span
-                v-for="tag in techTags(item.techStack).slice(0, 4)"
-                :key="tag"
-                class="tag-pill text-xs"
-              >
-                {{ tag }}
-              </span>
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <a
-                v-if="item.demoUrl"
-                :href="item.demoUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn-primary py-1.5 text-xs"
-              >
-                体验
-              </a>
-              <a
-                v-if="item.githubUrl"
-                :href="item.githubUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn-ghost py-1.5 text-xs"
-              >
-                GitHub
-              </a>
+
+            <!-- 技术栈 + 按钮：同一底部区域，左对齐 -->
+            <div class="lab-card-footer">
+              <div v-if="techTags(item.techStack).length" class="lab-card-tags">
+                <span
+                  v-for="tag in techTags(item.techStack).slice(0, 4)"
+                  :key="tag"
+                  class="tag-pill text-xs"
+                >
+                  {{ tag }}
+                </span>
+              </div>
+              <div v-if="item.demoUrl || item.githubUrl" class="lab-card-actions">
+                <a
+                  v-if="item.demoUrl"
+                  :href="item.demoUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-primary py-1.5 text-xs"
+                >
+                  体验
+                </a>
+                <a
+                  v-if="item.githubUrl"
+                  :href="item.githubUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="btn-ghost py-1.5 text-xs"
+                >
+                  GitHub
+                </a>
+              </div>
             </div>
           </div>
         </article>
@@ -297,6 +301,42 @@ onMounted(async () => {
     color-mix(in srgb, var(--color-secondary) 12%, transparent),
     color-mix(in srgb, var(--color-primary) 12%, transparent)
   );
+}
+
+.lab-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.lab-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 1.25rem;
+}
+
+.lab-card-footer {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.lab-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  width: 100%;
+}
+
+.lab-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .line-clamp-2 {

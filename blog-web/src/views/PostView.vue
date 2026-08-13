@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, RouterLink } from 'vue-router'
 import { fetchArticleBySlug } from '@/api/article'
 import GiscusComments from '@/components/comments/GiscusComments.vue'
 import Loading from '@/components/common/Loading.vue'
 import EmptyState from '@/components/common/EmptyState.vue'
+import { useMermaid } from '@/composables/useMermaid'
 import { useSiteStore } from '@/stores/site'
 import type { ArticleDetail } from '@/types'
 import { formatDate, formatCompactNumber, formatReadingTime, wasUpdatedAfterPublish, formatDateShort } from '@/utils/format'
@@ -15,6 +16,13 @@ const siteStore = useSiteStore()
 const article = ref<ArticleDetail | null>(null)
 const loading = ref(true)
 const error = ref('')
+const contentRef = ref<HTMLElement | null>(null)
+const mermaidEnabled = computed(() => !loading.value && !!article.value)
+const mermaidContentKey = computed(
+  () => article.value?.contentHtml || article.value?.content || '',
+)
+
+useMermaid(contentRef, mermaidEnabled, mermaidContentKey)
 
 async function loadArticle() {
   loading.value = true
@@ -27,6 +35,7 @@ async function loadArticle() {
     error.value = e instanceof Error ? e.message : '加载失败'
   } finally {
     loading.value = false
+    await nextTick()
   }
 }
 
@@ -94,6 +103,7 @@ onMounted(loadArticle)
       />
 
       <div
+        ref="contentRef"
         class="prose-blog"
         v-html="article.contentHtml || article.content"
       />

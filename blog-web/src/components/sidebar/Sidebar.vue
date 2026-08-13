@@ -2,33 +2,32 @@
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { fetchHotArticles } from '@/api/article'
+import { fetchSiteStats } from '@/api/site'
 import { useSiteStore } from '@/stores/site'
-import SiteStatsWidget from '@/components/sidebar/SiteStatsWidget.vue'
-import type { ArticleSummary } from '@/types'
+import { formatCompactNumber } from '@/utils/format'
+import type { ArticleSummary, SiteStats } from '@/types'
 
 defineProps<{
   showAnnouncement?: boolean
 }>()
 
 const siteStore = useSiteStore()
+const stats = ref<SiteStats | null>(null)
 const hotArticles = ref<ArticleSummary[]>([])
-const loadingHot = ref(true)
 
 onMounted(async () => {
-  try {
-    hotArticles.value = await fetchHotArticles(5)
-  } catch {
-    hotArticles.value = []
-  } finally {
-    loadingHot.value = false
-  }
+  const [statsResult, hotResult] = await Promise.allSettled([
+    fetchSiteStats(),
+    fetchHotArticles(5),
+  ])
+  stats.value = statsResult.status === 'fulfilled' ? statsResult.value : null
+  hotArticles.value = hotResult.status === 'fulfilled' ? hotResult.value : []
 })
 </script>
 
 <template>
   <aside class="space-y-5">
-    <SiteStatsWidget />
-
+    <!-- 公告 -->
     <section
       v-if="showAnnouncement && siteStore.sidebarAnnouncement"
       class="card p-5"
@@ -42,49 +41,14 @@ onMounted(async () => {
       </p>
     </section>
 
+    <!-- 热门标签 -->
     <section class="card p-5">
       <h3 class="mb-4 text-sm font-semibold dark:text-gray-200 light:text-gray-800">
-        🔥 热门文章
-      </h3>
-      <div v-if="loadingHot" class="space-y-3">
-        <div
-          v-for="i in 3"
-          :key="i"
-          class="h-4 animate-pulse rounded bg-white/5"
-        />
-      </div>
-      <ul v-else-if="hotArticles.length" class="space-y-3">
-        <li v-for="(article, index) in hotArticles" :key="article.id">
-          <RouterLink
-            :to="`/post/${article.slug}`"
-            class="group flex gap-3 text-sm transition-colors hover:text-primary"
-          >
-            <span
-              class="flex h-5 w-5 shrink-0 items-center justify-center rounded text-xs font-bold"
-              :class="
-                index < 3
-                  ? 'bg-primary/20 text-primary'
-                  : 'dark:bg-white/6 dark:text-gray-400 light:bg-gray-100 light:text-gray-500'
-              "
-            >
-              {{ index + 1 }}
-            </span>
-            <span class="line-clamp-2 dark:text-gray-300 light:text-gray-700 group-hover:text-primary">
-              {{ article.title }}
-            </span>
-          </RouterLink>
-        </li>
-      </ul>
-      <p v-else class="text-sm text-muted">暂无热门文章</p>
-    </section>
-
-    <section class="card p-5">
-      <h3 class="mb-4 text-sm font-semibold dark:text-gray-200 light:text-gray-800">
-        🏷️ 标签云
+        🏷️ 热门标签
       </h3>
       <div v-if="siteStore.tags.length" class="flex flex-wrap gap-2">
         <RouterLink
-          v-for="tag in siteStore.tags.slice(0, 20)"
+          v-for="tag in siteStore.tags.slice(0, 16)"
           :key="tag.id"
           :to="`/tags/${tag.slug}`"
           class="tag-pill"
@@ -97,6 +61,51 @@ onMounted(async () => {
       </div>
       <p v-else class="text-sm text-muted">暂无标签</p>
     </section>
+
+    <!-- 阅读排行 -->
+    <section v-if="hotArticles.length" class="card p-5">
+      <h3 class="mb-4 text-sm font-semibold dark:text-gray-200 light:text-gray-800">
+        🔥 阅读 TOP 5
+      </h3>
+      <ol class="hot-article-list">
+        <li v-for="(article, index) in hotArticles" :key="article.id">
+          <span class="hot-rank" :class="{ 'hot-rank-top': index < 3 }">{{ index + 1 }}</span>
+          <div class="hot-article-body">
+            <RouterLink :to="`/posts/${article.slug}`" class="hot-article-title">
+              {{ article.title }}
+            </RouterLink>
+            <span v-if="article.views !== undefined" class="hot-article-views">
+              {{ formatCompactNumber(article.views) }} 阅读
+            </span>
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- 站点信息 -->
+    <section class="card p-5">
+      <h3 class="mb-4 text-sm font-semibold dark:text-gray-200 light:text-gray-800">
+        📊 站点信息
+      </h3>
+      <ul class="site-info-list">
+        <li>
+          <span>文章</span>
+          <strong>{{ stats ? formatCompactNumber(stats.articleCount) : '-' }}</strong>
+        </li>
+        <li>
+          <span>分类</span>
+          <strong>{{ stats ? formatCompactNumber(stats.categoryCount) : '-' }}</strong>
+        </li>
+        <li>
+          <span>标签</span>
+          <strong>{{ stats ? formatCompactNumber(stats.tagCount) : '-' }}</strong>
+        </li>
+        <li>
+          <span>运行</span>
+          <strong>{{ stats ? `${stats.runningDays} 天` : '-' }}</strong>
+        </li>
+      </ul>
+    </section>
   </aside>
 </template>
 
@@ -105,10 +114,91 @@ onMounted(async () => {
   color: var(--color-muted, #8b8b9a);
 }
 
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+.site-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-info-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.site-info-list strong {
+  font-weight: 600;
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hot-article-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hot-article-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+}
+
+.hot-rank {
+  flex-shrink: 0;
+  width: 1.375rem;
+  height: 1.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.light .hot-rank {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.hot-rank-top {
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+}
+
+.hot-article-body {
+  min-width: 0;
+  flex: 1;
+}
+
+.hot-article-title {
+  display: block;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  font-weight: 500;
+  color: inherit;
+  transition: color 0.2s;
+}
+
+.hot-article-title:hover {
+  color: var(--color-primary);
+}
+
+.hot-article-views {
+  display: block;
+  margin-top: 0.125rem;
+  font-size: 0.6875rem;
+  color: var(--color-muted);
 }
 </style>
