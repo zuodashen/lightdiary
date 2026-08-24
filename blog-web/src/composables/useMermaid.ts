@@ -47,6 +47,18 @@ export function useMermaid(
       securityLevel: 'strict',
       theme: themeStore.isDark ? 'dark' : 'default',
       fontFamily: 'inherit',
+      // 不要强制 width:100%，宽图会被压成一条细线
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: 'basis',
+        padding: 20,
+        nodeSpacing: 50,
+        rankSpacing: 60,
+      },
+      themeVariables: {
+        fontSize: '16px',
+      },
     })
 
     for (const codeEl of Array.from(blocks)) {
@@ -65,6 +77,25 @@ export function useMermaid(
         const wrap = document.createElement('div')
         wrap.className = 'mermaid-diagram'
         wrap.innerHTML = svg
+
+        // 去掉 Mermaid 写入的 100% 宽高，按真实尺寸显示（可横向滚动）
+        const svgEl = wrap.querySelector('svg')
+        if (svgEl) {
+          svgEl.removeAttribute('width')
+          svgEl.removeAttribute('height')
+          svgEl.style.maxWidth = 'none'
+          svgEl.style.height = 'auto'
+          const vb = svgEl.getAttribute('viewBox')
+          if (vb) {
+            const parts = vb.split(/[\s,]+/).map(Number)
+            const vbW = parts[2]
+            if (vbW && Number.isFinite(vbW)) {
+              // 略放大，保证文字可读；超宽可横向滚动
+              svgEl.style.width = `${Math.max(vbW * 1.15, 640)}px`
+            }
+          }
+        }
+
         pre.replaceWith(wrap)
       } catch (e) {
         console.warn('Mermaid render failed:', e)

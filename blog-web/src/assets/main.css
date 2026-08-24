@@ -390,9 +390,9 @@
     @apply bg-transparent p-0 text-inherit;
   }
 
-  /* Mermaid 流程图（由前端把 language-mermaid 代码块渲染成 SVG） */
+  /* Mermaid 流程图：保持可读尺寸，过宽时横向滚动，避免被压成一条细线 */
   .prose-blog .mermaid-diagram {
-    @apply my-8 overflow-x-auto rounded-2xl border p-4;
+    @apply my-8 overflow-x-auto rounded-2xl border p-5 sm:p-6;
   }
 
   .dark .prose-blog .mermaid-diagram {
@@ -404,7 +404,11 @@
   }
 
   .prose-blog .mermaid-diagram svg {
-    @apply mx-auto max-w-full h-auto;
+    display: block;
+    margin: 0 auto;
+    max-width: none;
+    height: auto;
+    min-height: 220px;
   }
 
   .prose-blog hr {

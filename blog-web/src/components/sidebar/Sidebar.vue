@@ -71,7 +71,7 @@ onMounted(async () => {
         <li v-for="(article, index) in hotArticles" :key="article.id">
           <span class="hot-rank" :class="{ 'hot-rank-top': index < 3 }">{{ index + 1 }}</span>
           <div class="hot-article-body">
-            <RouterLink :to="`/posts/${article.slug}`" class="hot-article-title">
+            <RouterLink :to="`/post/${article.slug}`" class="hot-article-title">
               {{ article.title }}
             </RouterLink>
             <span v-if="article.views !== undefined" class="hot-article-views">
